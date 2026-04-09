@@ -1,0 +1,1593 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Two Brains Framework — Philip Ahlqwist</title>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --paper:  #f7f4ef;
+  --ink:    #1a1814;
+  --mid:    #4a4540;
+  --faint:  #9a9288;
+  --rule:   #d8d2c8;
+  --mark:   #eee8dc;
+  --deep:   #f0ece4;
+  --bg:     #e2ddd6;
+  --a:      #8a5a38;
+  --b:      #2a5a78;
+}
+
+html { font-size: 15px; scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: 'Libre Baskerville', Georgia, serif;
+  min-height: 100vh;
+}
+
+@keyframes fadeIn { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:none; } }
+@keyframes spin { to { transform:rotate(360deg); } }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.35} }
+
+/* ════════════════════════════════════════
+   SITE CHROME
+════════════════════════════════════════ */
+
+.site-header {
+  max-width: 740px;
+  margin: 48px auto 3px;
+  background: var(--paper);
+  position: relative;
+  overflow: hidden;
+}
+.site-header::before {
+  content: '';
+  position: absolute; inset: 0;
+  background-image: repeating-linear-gradient(0deg, transparent, transparent 27px, rgba(0,0,0,0.016) 27px, rgba(0,0,0,0.016) 28px);
+  pointer-events: none;
+}
+.site-header > * { position: relative; }
+
+.header-inner {
+  padding: 44px 72px 32px;
+  border-bottom: 2px solid var(--ink);
+}
+.header-meta {
+  display: grid;
+  grid-template-columns: 44px 1fr;
+  gap: 4px 16px;
+  font-family: 'DM Mono', monospace;
+  font-size: 9.5px;
+  letter-spacing: 0.5px;
+  color: var(--faint);
+  margin-bottom: 20px;
+  line-height: 1.6;
+}
+.header-meta span { color: var(--ink); }
+.header-meta .ml { font-weight: 700; color: var(--faint); }
+.site-title {
+  font-size: clamp(26px, 4vw, 40px);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.5px;
+  color: var(--ink);
+}
+
+/* ── TAB NAV ── */
+.tab-nav {
+  display: flex;
+  border-top: 1px solid var(--rule);
+}
+.tab-btn {
+  flex: 1;
+  padding: 16px 12px;
+  background: transparent;
+  border: none;
+  border-right: 1px solid var(--rule);
+  cursor: pointer;
+  font-family: 'DM Mono', monospace;
+  font-size: 8.5px;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: var(--faint);
+  transition: all 0.15s;
+  line-height: 1.4;
+}
+.tab-btn:last-child { border-right: none; }
+.tab-btn:hover { background: var(--mark); color: var(--ink); }
+.tab-btn.active { background: var(--ink); color: var(--paper); }
+.tab-btn .tab-num { display: block; font-size: 7px; letter-spacing: 3px; margin-bottom: 4px; opacity: 0.5; }
+.tab-btn.active .tab-num { opacity: 0.6; }
+
+/* ── SECTION WRAPPER ── */
+.section-wrap {
+  max-width: 740px;
+  margin: 0 auto;
+  display: none;
+}
+.section-wrap.active { display: block; }
+
+/* ── PAGE TILES (shared) ── */
+.page {
+  background: var(--paper);
+  width: 100%;
+  margin-bottom: 3px;
+  position: relative;
+  overflow: hidden;
+}
+.page::before {
+  content: '';
+  position: absolute; inset: 0;
+  background-image: repeating-linear-gradient(0deg, transparent, transparent 27px, rgba(0,0,0,0.016) 27px, rgba(0,0,0,0.016) 28px);
+  pointer-events: none; z-index: 0;
+}
+.page > * { position: relative; z-index: 1; }
+
+.page-foot {
+  padding: 18px 72px;
+  border-top: 1px solid var(--rule);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.page-num  { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:3px; color:var(--faint); }
+.page-name { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:3px; text-transform:uppercase; color:var(--faint); }
+
+/* ── MEMO HEADER ── */
+.memo-header { padding: 52px 72px 28px; border-bottom: 2px solid var(--ink); }
+.memo-meta {
+  display: grid;
+  grid-template-columns: 44px 1fr;
+  gap: 5px 20px;
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.5px;
+  color: var(--faint);
+  margin-bottom: 24px;
+  line-height: 1.6;
+}
+.memo-meta span { color: var(--ink); }
+.memo-meta .memo-label { color: var(--faint); font-weight: 700; }
+.memo-title {
+  font-size: clamp(22px, 3.5vw, 34px);
+  line-height: 1.15;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  color: var(--ink);
+  max-width: 560px;
+}
+
+/* ── BODY TEXT ── */
+.body { padding: 48px 72px; }
+p {
+  font-size: 15px;
+  line-height: 1.9;
+  color: var(--mid);
+  margin-bottom: 22px;
+}
+p:last-child { margin-bottom: 0; }
+p strong { color: var(--ink); font-weight: 700; }
+p em { font-style: italic; color: var(--ink); }
+
+.lede {
+  font-size: clamp(17px, 2.2vw, 21px);
+  line-height: 1.65;
+  color: var(--ink);
+  margin-bottom: 36px;
+  font-style: italic;
+}
+
+/* ── SEC MARKER ── */
+.sec {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin: 44px 0 32px;
+}
+.sec-num  { font-family:'DM Mono',monospace; font-size:10px; letter-spacing:3px; color:var(--faint); flex-shrink:0; }
+.sec-rule { flex:1; height:1px; background:var(--rule); }
+.sec-label{ font-family:'DM Mono',monospace; font-size:10px; letter-spacing:3px; text-transform:uppercase; color:var(--faint); flex-shrink:0; }
+
+/* ── PULL QUOTE ── */
+.pull { border-left:3px solid var(--ink); padding:4px 0 4px 28px; margin:36px 0; }
+.pull-text { font-size:clamp(17px,2.2vw,22px); line-height:1.5; color:var(--ink); font-style:italic; }
+.pull-attr { font-family:'DM Mono',monospace; font-size:9.5px; letter-spacing:2px; text-transform:uppercase; color:var(--faint); margin-top:10px; }
+
+/* ── FRAMEWORK BOX ── */
+.framework { margin:40px 0 48px; display:grid; grid-template-columns:1fr 48px 1fr; gap:0; align-items:start; }
+.brain { padding:28px 28px 32px; }
+.brain-1 { background:var(--deep); border:1px solid var(--rule); border-right:none; }
+.brain-2 { background:var(--deep); border:1px solid var(--rule); border-left:none; }
+.brain-label { font-family:'DM Mono',monospace; font-size:8px; letter-spacing:4px; text-transform:uppercase; margin-bottom:12px; color:var(--faint); }
+.brain-title { font-size:clamp(16px,2vw,20px); font-weight:700; letter-spacing:-0.3px; margin-bottom:20px; line-height:1.2; color:var(--ink); }
+.brain-items { list-style:none; display:flex; flex-direction:column; gap:0; }
+.brain-items li { font-family:'DM Mono',monospace; font-size:11px; letter-spacing:0.5px; line-height:1.5; padding:8px 0; border-bottom:1px solid rgba(0,0,0,0.07); display:flex; align-items:center; gap:10px; color:var(--mid); }
+.brain-items li::before { content:'—'; font-size:9px; flex-shrink:0; color:var(--faint); }
+.brain-items li:last-child { border-bottom:none; }
+.brain-vs { display:flex; align-items:center; justify-content:center; padding-top:80px; }
+.brain-vs-inner { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:3px; color:var(--faint); writing-mode:vertical-rl; text-orientation:mixed; }
+
+/* ── CASES ── */
+.cases { display:flex; flex-direction:column; gap:0; margin:32px 0; }
+.case { display:grid; grid-template-columns:100px 1fr; gap:0; border-bottom:1px solid var(--rule); }
+.case:last-child { border-bottom:none; }
+.case-co { padding:20px 20px 20px 0; border-right:1px solid var(--rule); }
+.case-co-name { font-family:'DM Mono',monospace; font-size:10px; letter-spacing:2px; text-transform:uppercase; color:var(--ink); display:block; margin-bottom:4px; }
+.case-co-tag { font-family:'DM Mono',monospace; font-size:8px; letter-spacing:1px; color:var(--faint); display:block; line-height:1.5; }
+.case-body { padding:20px 0 20px 24px; font-size:14px; line-height:1.8; color:var(--mid); }
+.case-body strong { color:var(--ink); }
+
+/* ── DATA TABLE ── */
+.data-table { width:100%; border-collapse:collapse; margin:32px 0; font-family:'DM Mono',monospace; }
+.data-table th { font-size:9px; letter-spacing:3px; text-transform:uppercase; color:var(--faint); text-align:left; padding:0 0 10px; border-bottom:1px solid var(--rule); font-weight:400; }
+.data-table td { font-size:13px; color:var(--mid); padding:14px 0; border-bottom:1px solid var(--rule); vertical-align:top; line-height:1.6; }
+.data-table td:first-child { color:var(--ink); font-weight:500; width:16%; padding-right:20px; font-size:22px; letter-spacing:-0.5px; vertical-align:top; padding-top:12px; font-family:'Libre Baskerville',serif; }
+.data-table td:nth-child(2) { width:32%; padding-right:20px; font-size:11px; letter-spacing:0.3px; }
+.data-table tr:last-child td { border-bottom:none; }
+
+/* ── HIGHLIGHT ── */
+.highlight { background:var(--mark); padding:28px 32px; margin:32px 0; border-top:1px solid var(--rule); border-bottom:1px solid var(--rule); }
+.highlight p { color:var(--ink); font-size:14px; margin-bottom:0; }
+.highlight p + p { margin-top:12px; }
+
+/* ── PROOF LIST ── */
+.proof-list { list-style:none; margin:24px 0; }
+.proof-list li { display:grid; grid-template-columns:110px 1fr; gap:24px; padding:18px 0; border-bottom:1px solid var(--rule); font-size:14px; line-height:1.75; color:var(--mid); }
+.proof-list li:last-child { border-bottom:none; }
+.proof-list .co { font-family:'DM Mono',monospace; font-size:10px; letter-spacing:1.5px; text-transform:uppercase; color:var(--ink); padding-top:2px; }
+.role-badge { display:inline-block; font-family:'DM Mono',monospace; font-size:7.5px; letter-spacing:2px; text-transform:uppercase; background:var(--mark); color:var(--faint); padding:2px 6px; margin-top:5px; }
+.proof-list strong { color:var(--ink); }
+
+/* ── CAUSAL BADGE ── */
+.causal { display:inline-block; font-family:'DM Mono',monospace; font-size:8px; letter-spacing:2px; text-transform:uppercase; color:var(--ink); border:1px solid var(--ink); padding:2px 7px; margin-bottom:8px; }
+
+/* ── SEQUENCE ── */
+.sequence { margin:32px 0; display:flex; flex-direction:column; }
+.seq-row { display:flex; align-items:stretch; gap:0; }
+.seq-num { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:2px; color:var(--faint); min-width:32px; padding-top:14px; flex-shrink:0; }
+.seq-connector { display:flex; flex-direction:column; align-items:center; min-width:20px; flex-shrink:0; }
+.seq-dot { width:8px; height:8px; border-radius:50%; border:1.5px solid var(--rule); background:var(--paper); flex-shrink:0; margin-top:15px; }
+.seq-row.accent .seq-dot { background:var(--ink); border-color:var(--ink); }
+.seq-line { flex:1; width:1px; background:var(--rule); margin:0 auto; }
+.seq-row:last-child .seq-line { display:none; }
+.seq-content { flex:1; padding:10px 0 20px 20px; }
+.seq-title { font-family:'DM Mono',monospace; font-size:11px; letter-spacing:2px; text-transform:uppercase; color:var(--ink); margin-bottom:4px; }
+.seq-row.accent .seq-title { font-weight:700; }
+.seq-body { font-size:13px; color:var(--faint); line-height:1.7; margin-bottom:0; }
+
+/* ── OFFER BOX ── */
+.offer-box { border:1.5px solid var(--ink); padding:36px 40px; margin:32px 0; position:relative; }
+.offer-box-label { position:absolute; top:-10px; left:32px; background:var(--paper); padding:0 10px; font-family:'DM Mono',monospace; font-size:9px; letter-spacing:3px; text-transform:uppercase; color:var(--faint); }
+.offer-box p { font-size:15px; line-height:1.9; color:var(--ink); margin-bottom:0; }
+.offer-box p + p { margin-top:16px; }
+
+/* ── ASK BOX ── */
+.ask-box { background:var(--ink); padding:40px 44px; margin:40px 0 0; }
+.ask-box-label { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:3px; text-transform:uppercase; color:var(--faint); margin-bottom:20px; display:block; }
+.ask-box-title { font-size:clamp(18px,2.4vw,24px); font-weight:700; color:var(--paper); line-height:1.35; margin-bottom:20px; letter-spacing:-0.3px; }
+.ask-box p { font-size:14px; line-height:1.85; color:#9a9288; margin-bottom:0; }
+.ask-box p + p { margin-top:12px; }
+.ask-box strong { color:var(--paper); }
+
+/* ── THREE-WAY OFFER ── */
+.three-way { display:grid; grid-template-columns:1fr 1fr 1fr; gap:1px; background:var(--rule); border:1px solid var(--rule); margin:32px 0; }
+.offer-col { background:var(--paper); padding:24px 20px 28px; }
+.offer-col-tag { font-family:'DM Mono',monospace; font-size:8px; letter-spacing:3px; text-transform:uppercase; color:var(--faint); display:block; margin-bottom:12px; }
+.offer-col-title { font-size:15px; font-weight:700; color:var(--ink); margin-bottom:10px; line-height:1.25; }
+.offer-col p { font-size:13px; line-height:1.7; color:var(--mid); margin-bottom:0; }
+
+/* ── MATRIX EMBED ── */
+.matrix-embed { width:100%; margin:48px 0; }
+.matrix-embed .header { margin-bottom:32px; }
+.matrix-wrap { position:relative; padding:0 0 36px 0; display:flex; flex-direction:row; align-items:stretch; }
+.axis-y-label-inline { font-family:'DM Mono',monospace; font-size:10px; letter-spacing:0.28em; color:var(--faint); text-transform:uppercase; white-space:nowrap; writing-mode:vertical-rl; transform:rotate(180deg); align-self:center; margin-right:16px; flex-shrink:0; }
+.axis-x-arrow { position:absolute; bottom:24px; left:0; right:0; height:1px; background:var(--rule); }
+.axis-x-arrow::after { content:''; position:absolute; right:-1px; top:-4px; border-top:4px solid transparent; border-bottom:4px solid transparent; border-left:7px solid var(--rule); }
+.axis-x-label { position:absolute; bottom:0; left:0; right:0; text-align:center; font-family:'DM Mono',monospace; font-size:10px; letter-spacing:0.28em; color:var(--faint); text-transform:uppercase; }
+.matrix-grid { display:grid; grid-template-columns:280px 280px; grid-template-rows:280px 280px; gap:3px; background:var(--rule); border:1px solid var(--rule); width:fit-content; }
+.q { padding:28px; position:relative; width:280px; height:280px; display:flex; flex-direction:column; justify-content:space-between; }
+.q-tl,.q-tr,.q-bl,.q-br { background:var(--deep); }
+.q-number { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:0.25em; margin-bottom:20px; display:block; color:var(--faint); }
+.q-name { font-size:clamp(20px,2.8vw,28px); font-weight:700; line-height:1.1; letter-spacing:-0.01em; margin-bottom:12px; color:var(--ink); }
+.q-bl .q-name,.q-br .q-name { color:var(--mid); }
+.q-body { font-size:clamp(12px,1.4vw,14px); line-height:1.6; font-style:italic; margin-bottom:20px; color:var(--mid); }
+.q-br .q-body { color:var(--faint); }
+.q-tag { font-family:'DM Mono',monospace; font-size:10px; letter-spacing:0.18em; text-transform:uppercase; display:inline-block; padding:5px 10px; border:1px solid; }
+.q-tl .q-tag,.q-tr .q-tag { color:var(--mid); border-color:var(--rule); }
+.q-bl .q-tag,.q-br .q-tag { color:var(--faint); border-color:var(--rule); }
+.q-tr::before { content:'★'; position:absolute; bottom:32px; right:32px; font-size:13.65px; color:var(--faint); }
+.footer-axiom { font-size:clamp(13px,1.6vw,16px); font-style:italic; color:var(--ink); line-height:1.55; max-width:560px; }
+.footer-axiom strong { font-style:normal; font-weight:700; }
+
+/* ── SCORE CARDS (white paper section 5) ── */
+.score-card-grid { display:grid; grid-template-columns:1fr 1fr; gap:1px; background:var(--rule); border:1px solid var(--rule); margin:28px 0; }
+.score-card { background:var(--paper); padding:24px 28px; border-bottom:1px solid var(--rule); }
+.score-card-header { display:flex; justify-content:space-between; align-items:baseline; margin-bottom:10px; }
+
+/* ════════════════════════════════════════
+   TAB 2 — BATTLE MODE
+════════════════════════════════════════ */
+
+/* API banner */
+#api-banner {
+  background: var(--deep);
+  border-bottom: 1px solid var(--rule);
+  padding: 14px 72px;
+  display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+}
+#api-banner label { font-family:'DM Mono',monospace; font-size:8px; letter-spacing:3px; color:var(--faint); text-transform:uppercase; white-space:nowrap; }
+#api-key-input { flex:1; min-width:200px; background:var(--paper); border:1px solid var(--rule); padding:7px 12px; font-family:'DM Mono',monospace; font-size:11px; color:var(--ink); outline:none; letter-spacing:1px; }
+#api-key-input::placeholder { color:var(--rule); }
+#api-key-save { background:transparent; border:1px solid var(--ink); color:var(--ink); padding:7px 16px; cursor:pointer; font-family:'DM Mono',monospace; font-size:8px; letter-spacing:2px; text-transform:uppercase; transition:background 0.15s; }
+#api-key-save:hover { background:var(--mark); }
+#api-key-status { font-family:'DM Mono',monospace; font-size:8px; color:var(--faint); letter-spacing:1px; }
+
+/* views */
+.bv { display:none; }
+.bv.active { display:block; }
+
+/* input form */
+.vs-grid { display:grid; grid-template-columns:1fr 48px 1fr; align-items:center; margin-bottom:28px; }
+.vs-label { font-family:'DM Mono',monospace; font-size:8px; letter-spacing:3px; text-transform:uppercase; display:block; margin-bottom:10px; color:var(--faint); }
+.entity-input { width:100%; border:none; border-bottom:1px solid var(--rule); background:transparent; padding:10px 0; font-size:18px; font-family:'Libre Baskerville',serif; font-weight:700; color:var(--ink); outline:none; transition:border-color 0.2s; }
+.entity-input:focus { border-bottom-color:var(--ink); }
+.entity-input::placeholder { color:var(--rule); font-weight:400; font-style:italic; }
+.vs-center { text-align:center; padding-top:22px; font-family:'DM Mono',monospace; font-size:11px; letter-spacing:2px; color:var(--faint); }
+.depth-grid { display:flex; gap:0; margin-bottom:28px; border:1px solid var(--rule); }
+.depth-opt { flex:1; padding:12px 16px; cursor:pointer; border-right:1px solid var(--rule); transition:background 0.15s; }
+.depth-opt:last-child { border-right:none; }
+.depth-opt.active { background:var(--mark); }
+.depth-opt .opt-label { font-weight:700; font-size:13px; color:var(--faint); margin-bottom:3px; }
+.depth-opt.active .opt-label { color:var(--ink); }
+.depth-opt .opt-sub { font-family:'DM Mono',monospace; font-size:9px; color:var(--rule); }
+.depth-opt.active .opt-sub { color:var(--faint); }
+#btn-start { width:100%; border:1px solid var(--rule); padding:16px; font-size:10px; font-weight:400; letter-spacing:3px; text-transform:uppercase; font-family:'DM Mono',monospace; cursor:pointer; background:transparent; color:var(--faint); transition:all 0.2s; }
+#btn-start.ready { background:var(--ink); color:var(--paper); border-color:var(--ink); }
+.surprise-wrap { margin-top:20px; text-align:center; }
+#btn-surprise { width:100%; background:transparent; border:1px solid var(--rule); padding:12px 28px; cursor:pointer; color:var(--faint); font-family:'DM Mono',monospace; font-size:9px; letter-spacing:3px; text-transform:uppercase; transition:all 0.2s; }
+#btn-surprise:hover { border-color:var(--ink); color:var(--ink); }
+.surprise-sub { font-family:'DM Mono',monospace; font-size:8px; color:var(--faint); margin-top:8px; letter-spacing:1px; }
+
+/* fighting */
+.fight-names { display:grid; grid-template-columns:1fr 64px 1fr; align-items:center; margin-bottom:48px; }
+.fight-name-a { text-align:right; }
+.fight-letter { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:3px; text-transform:uppercase; margin-bottom:8px; color:var(--faint); }
+.fight-name-text { font-size:clamp(18px,3vw,26px); font-weight:700; color:var(--ink); line-height:1.2; }
+.fight-vs { display:flex; align-items:flex-start; justify-content:center; padding-top:22px; font-family:'DM Mono',monospace; font-size:11px; letter-spacing:2px; color:var(--faint); }
+.b-spinner { width:32px; height:32px; border:1.5px solid var(--rule); border-top-color:var(--ink); border-radius:50%; animation:spin 0.9s linear infinite; margin:0 auto 24px; }
+.b-progress-wrap { width:100%; height:2px; background:var(--rule); margin-bottom:16px; overflow:hidden; }
+.b-progress-fill { height:100%; background:var(--ink); transition:width 0.3s ease; width:0%; }
+.fight-status { font-family:'DM Mono',monospace; font-size:10px; color:var(--faint); letter-spacing:2px; margin-bottom:6px; text-align:center; }
+.fight-pct { font-family:'DM Mono',monospace; font-size:9px; color:var(--rule); letter-spacing:1px; text-align:center; }
+.b-error-box { background:var(--deep); border:1px solid var(--rule); padding:28px 32px; }
+.b-error-title { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:3px; color:var(--ink); text-transform:uppercase; margin-bottom:12px; }
+.b-error-msg { font-size:12px; color:var(--mid); line-height:1.8; margin-bottom:24px; word-break:break-word; }
+.b-error-btns { display:flex; gap:10px; flex-wrap:wrap; }
+.btn-mono { background:transparent; border:1px solid var(--ink); color:var(--ink); padding:10px 20px; cursor:pointer; font-family:'DM Mono',monospace; font-size:9px; letter-spacing:2px; text-transform:uppercase; transition:background 0.15s; }
+.btn-mono:hover { background:var(--mark); }
+.btn-mono.faint { border-color:var(--rule); color:var(--faint); }
+
+/* result */
+.b-scoreboard { display:grid; grid-template-columns:1fr 100px 1fr; margin-bottom:36px; animation:fadeIn 0.5s ease both; border:1px solid var(--rule); }
+.b-score-panel { padding:28px 24px; text-align:center; background:var(--deep); }
+.b-score-panel.winner-a,.b-score-panel.winner-b { background:var(--mark); }
+.b-score-panel-a { border-right:none; }
+.b-score-panel-b { border-left:none; }
+.b-score-name { font-family:'DM Mono',monospace; font-size:8px; letter-spacing:3px; margin-bottom:10px; text-transform:uppercase; color:var(--faint); }
+.b-score-num { font-size:52px; font-weight:700; letter-spacing:-3px; line-height:1; color:var(--ink); }
+.b-score-num.a { color:var(--a); }
+.b-score-num.b { color:var(--b); }
+.b-score-breakdown { font-family:'DM Mono',monospace; font-size:9px; color:var(--faint); margin-top:6px; }
+.b-score-winner-badge { margin-top:12px; display:inline-block; font-family:'DM Mono',monospace; font-size:7px; letter-spacing:3px; background:var(--ink); color:var(--paper); padding:3px 10px; text-transform:uppercase; }
+.b-score-center { display:flex; flex-direction:column; align-items:center; justify-content:center; background:var(--paper); border-left:1px solid var(--rule); border-right:1px solid var(--rule); padding:0 12px; }
+.b-score-cat { font-family:'DM Mono',monospace; font-size:8px; letter-spacing:3px; color:var(--faint); margin-bottom:8px; text-transform:uppercase; }
+.b-score-vs { font-size:12px; font-weight:700; color:var(--rule); letter-spacing:2px; font-family:'DM Mono',monospace; }
+.b-score-wins { margin-top:12px; text-align:center; }
+.b-score-wins-label { font-family:'DM Mono',monospace; font-size:7px; letter-spacing:2px; color:var(--faint); margin-bottom:4px; }
+.b-score-wins-nums { display:flex; gap:4px; justify-content:center; font-family:'DM Mono',monospace; font-size:13px; }
+
+.b-verdict-block { border-left:3px solid var(--ink); padding:4px 0 4px 28px; margin-bottom:20px; animation:fadeIn 0.5s ease 0.15s both; }
+.b-verdict-meta { display:flex; align-items:center; gap:12px; margin-bottom:8px; flex-wrap:wrap; }
+.b-verdict-margin { font-family:'DM Mono',monospace; font-size:8px; letter-spacing:3px; color:var(--faint); text-transform:uppercase; }
+.b-verdict-limited { font-family:'DM Mono',monospace; font-size:7px; letter-spacing:2px; color:var(--faint); border:1px solid var(--rule); padding:2px 8px; text-transform:uppercase; }
+.b-verdict-headline { font-size:clamp(16px,2.4vw,22px); font-weight:700; font-style:italic; color:var(--ink); line-height:1.4; }
+.b-verdict-analysis { font-size:14px; color:var(--mid); line-height:1.9; max-width:560px; animation:fadeIn 0.5s ease 0.25s both; margin-bottom:36px; }
+
+.b-decisive-bar { background:var(--deep); border:1px solid var(--rule); padding:16px 24px; margin-bottom:36px; display:flex; gap:20px; align-items:center; }
+.b-decisive-label { font-family:'DM Mono',monospace; font-size:8px; letter-spacing:3px; color:var(--faint); text-transform:uppercase; flex-shrink:0; }
+.b-decisive-text { font-size:13px; color:var(--ink); font-style:italic; }
+
+.b-brain-section { margin-bottom:36px; }
+.b-brain-header { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:4px; text-transform:uppercase; margin-bottom:0; padding:10px 0 12px; border-bottom:2px solid var(--ink); display:flex; justify-content:space-between; color:var(--faint); }
+.b-brain-header .bh-a { color:var(--a); }
+.b-brain-header .bh-b { color:var(--b); }
+.b-brain-header .bh-c { color:var(--ink); }
+
+.b-dim-row { display:grid; grid-template-columns:1fr 120px 1fr; border-bottom:1px solid var(--rule); padding:12px 0; }
+.b-dim-left { padding:0 20px 0 0; }
+.b-dim-left.loser { opacity:0.3; }
+.b-dim-right { padding:0 0 0 20px; }
+.b-dim-right.loser { opacity:0.3; }
+.b-dim-score-row { display:flex; align-items:center; gap:8px; margin-bottom:6px; }
+.b-dim-score-row.right { justify-content:flex-end; }
+.b-dim-score { font-family:'DM Mono',monospace; font-size:20px; font-weight:700; color:var(--ink); }
+.b-dim-score.a { color:var(--a); }
+.b-dim-score.b { color:var(--b); }
+.b-dim-win-badge { font-family:'DM Mono',monospace; font-size:7px; letter-spacing:2px; padding:2px 6px; background:var(--mark); border:1px solid var(--rule); color:var(--ink); }
+.b-pips { display:flex; gap:3px; }
+.b-pips.right { justify-content:flex-end; }
+.b-pip { width:8px; height:8px; border-radius:50%; background:var(--rule); }
+.b-dim-center { display:flex; flex-direction:column; align-items:center; justify-content:center; border-left:1px solid var(--rule); border-right:1px solid var(--rule); padding:0 10px; }
+.b-dim-brain-tag { font-family:'DM Mono',monospace; font-size:6px; letter-spacing:2.5px; text-transform:uppercase; margin-bottom:4px; color:var(--faint); }
+.b-dim-name { font-size:9px; font-family:'DM Mono',monospace; color:var(--mid); text-align:center; letter-spacing:0.5px; line-height:1.4; }
+.b-dim-tie { font-family:'DM Mono',monospace; font-size:6px; letter-spacing:2px; color:var(--faint); border:1px solid var(--rule); padding:1px 6px; margin-top:4px; }
+.b-dim-insight { font-size:11px; color:var(--faint); font-style:italic; line-height:1.6; padding:6px 0 10px; border-bottom:1px solid var(--mark); }
+
+.b-bottom-grid { display:grid; grid-template-columns:1fr 1fr; gap:3px; margin-bottom:36px; }
+.b-path-card { background:var(--deep); border:1px solid var(--rule); padding:20px 24px; }
+.b-wildcard-card { background:var(--mark); border:1px solid var(--rule); padding:20px 24px; }
+.b-card-title { font-family:'DM Mono',monospace; font-size:8px; letter-spacing:3px; text-transform:uppercase; margin-bottom:10px; color:var(--faint); }
+.b-card-text { font-size:13px; color:var(--mid); line-height:1.8; margin-bottom:0; }
+.b-card-text.italic { font-style:italic; }
+
+.b-action-btns { display:flex; gap:0; flex-wrap:wrap; }
+.b-action-btns button { background:transparent; border:1px solid var(--ink); color:var(--ink); padding:12px 24px; cursor:pointer; font-family:'DM Mono',monospace; font-size:9px; letter-spacing:2px; text-transform:uppercase; margin-right:8px; margin-bottom:8px; transition:background 0.15s; }
+.b-action-btns button:hover { background:var(--mark); }
+#btn-new { border-color:var(--rule); color:var(--faint); }
+
+/* history */
+.b-history-title { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:3px; color:var(--faint); text-transform:uppercase; margin-bottom:28px; }
+.b-history-empty { color:var(--faint); font-style:italic; font-size:14px; }
+.b-history-row { display:grid; grid-template-columns:1fr auto 1fr auto; gap:20px; align-items:center; padding:16px 0; border-bottom:1px solid var(--rule); cursor:pointer; transition:background 0.12s; }
+.b-history-row:hover { background:var(--mark); margin:0 -8px; padding:16px 8px; }
+.b-history-entity { font-size:15px; font-weight:700; color:var(--ink); }
+.b-history-pts { font-family:'DM Mono',monospace; font-size:9px; color:var(--faint); }
+.b-history-vs { font-family:'DM Mono',monospace; font-size:10px; color:var(--rule); font-weight:700; }
+.b-history-winner-badge { font-family:'DM Mono',monospace; font-size:9px; color:var(--ink); padding:4px 10px; border:1px solid var(--rule); background:var(--deep); white-space:nowrap; }
+
+/* share modal */
+#share-modal { display:none; position:fixed; inset:0; background:rgba(26,24,20,0.8); align-items:center; justify-content:center; z-index:1000; padding:24px; }
+#share-modal.open { display:flex; }
+.share-card-wrap { width:100%; max-width:560px; }
+.share-card { background:var(--paper); border:1px solid var(--rule); overflow:hidden; font-family:'Libre Baskerville',Georgia,serif; }
+.share-top-bar { border-bottom:1px solid var(--rule); padding:12px 24px; display:flex; justify-content:space-between; align-items:center; background:var(--deep); }
+.share-matchup { padding:28px 28px 20px; display:grid; grid-template-columns:1fr 48px 1fr; align-items:center; }
+.share-score-bars { padding:0 28px 20px; display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.share-bar { background:var(--deep); border:1px solid var(--rule); padding:10px 14px; }
+.share-verdict { margin:0 28px 20px; border-left:3px solid var(--ink); padding-left:16px; }
+.share-wildcard { margin:0 28px 20px; background:var(--mark); border:1px solid var(--rule); padding:10px 14px; }
+.share-footer { border-top:1px solid var(--rule); padding:12px 28px; display:flex; justify-content:space-between; align-items:center; background:var(--deep); }
+.share-actions { display:flex; gap:8px; margin-top:12px; flex-wrap:wrap; }
+.btn-copy-li,.btn-close-modal { flex:1; min-width:140px; background:transparent; border:1px solid var(--rule); color:var(--mid); padding:12px 20px; cursor:pointer; font-family:'DM Mono',monospace; font-size:9px; letter-spacing:2px; text-transform:uppercase; transition:background 0.15s; }
+.btn-copy-li { background:var(--ink); color:var(--paper); border-color:var(--ink); }
+.btn-copy-li:hover { background:var(--mid); }
+.btn-close-modal:hover { background:var(--mark); }
+.share-hint { margin-top:8px; font-family:'DM Mono',monospace; font-size:8px; color:var(--faint); text-align:center; }
+
+/* ════════════════════════════════════════
+   TAB 3 — BRAIN 2 SCORE
+════════════════════════════════════════ */
+
+.lang-bar { display:flex; gap:0; margin-bottom:3px; max-width:740px; }
+.lang-btn { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:3px; text-transform:uppercase; padding:9px 18px; background:var(--deep); border:1px solid var(--rule); border-right:none; cursor:pointer; color:var(--faint); transition:all 0.2s; }
+.lang-btn:last-child { border-right:1px solid var(--rule); }
+.lang-btn.active { background:var(--ink); color:var(--paper); border-color:var(--ink); }
+
+.quiz-wrap { display:none; }
+.quiz-wrap.active { display:block; }
+
+.section-card { background:var(--paper); margin-bottom:3px; position:relative; overflow:hidden; }
+.section-card::before { content:''; position:absolute; inset:0; background-image:repeating-linear-gradient(0deg,transparent,transparent 27px,rgba(0,0,0,0.016) 27px,rgba(0,0,0,0.016) 28px); pointer-events:none; }
+.section-header { padding:32px 72px 24px; border-bottom:1px solid var(--rule); position:relative; }
+.section-tag { font-family:'DM Mono',monospace; font-size:8px; letter-spacing:4px; text-transform:uppercase; color:var(--faint); margin-bottom:8px; display:block; }
+.section-title { font-size:22px; font-weight:700; color:var(--ink); letter-spacing:-0.3px; }
+.section-desc { font-size:13px; color:var(--faint); font-family:'DM Mono',monospace; letter-spacing:0.3px; margin-top:6px; line-height:1.6; }
+.questions-wrap { padding:0 72px 32px; position:relative; }
+
+.question { padding:24px 0; border-bottom:1px solid var(--rule); }
+.question:last-child { border-bottom:none; }
+.q-label { font-family:'DM Mono',monospace; font-size:8px; letter-spacing:3px; text-transform:uppercase; color:var(--faint); margin-bottom:8px; display:block; }
+.q-text { font-size:15px; line-height:1.7; color:var(--ink); margin-bottom:6px; font-weight:700; }
+.q-hint { font-size:12px; color:var(--faint); font-style:italic; margin-bottom:16px; line-height:1.6; }
+.scale { display:flex; gap:8px; align-items:center; }
+.scale-label { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:1px; color:var(--faint); flex-shrink:0; max-width:90px; line-height:1.4; }
+.scale-label.right { text-align:right; }
+.scale-btns { display:flex; gap:6px; flex:1; justify-content:center; }
+.scale-btn { width:40px; height:40px; background:var(--deep); border:1px solid var(--rule); font-family:'DM Mono',monospace; font-size:13px; color:var(--faint); cursor:pointer; transition:all 0.15s; display:flex; align-items:center; justify-content:center; }
+.scale-btn:hover { border-color:var(--mid); color:var(--ink); }
+.scale-btn.selected { background:var(--ink); border-color:var(--ink); color:var(--paper); }
+
+.s-progress-wrap { background:var(--paper); padding:16px 72px; margin-bottom:3px; display:flex; align-items:center; gap:20px; position:sticky; top:0; z-index:50; border-bottom:1px solid var(--rule); }
+.s-progress-track { flex:1; height:2px; background:var(--rule); }
+.s-progress-fill { height:100%; background:var(--ink); transition:width 0.3s ease; width:0%; }
+.s-progress-text { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:2px; color:var(--faint); flex-shrink:0; }
+
+.email-gate { background:var(--paper); padding:52px 72px; margin-bottom:3px; position:relative; overflow:hidden; display:none; }
+.email-gate::before { content:''; position:absolute; inset:0; background-image:repeating-linear-gradient(0deg,transparent,transparent 27px,rgba(0,0,0,0.016) 27px,rgba(0,0,0,0.016) 28px); pointer-events:none; }
+.email-gate.active { display:block; }
+.gate-title { font-size:clamp(22px,3vw,30px); font-weight:700; color:var(--ink); line-height:1.2; margin-bottom:16px; letter-spacing:-0.3px; }
+.gate-sub { font-size:15px; color:var(--mid); line-height:1.8; margin-bottom:32px; font-style:italic; }
+.email-form { display:flex; gap:0; max-width:480px; }
+.email-input { flex:1; padding:14px 18px; font-family:'DM Mono',monospace; font-size:12px; letter-spacing:1px; background:var(--deep); border:1px solid var(--rule); border-right:none; color:var(--ink); outline:none; }
+.email-input::placeholder { color:var(--faint); }
+.email-input:focus { border-color:var(--mid); }
+.email-submit { padding:14px 24px; background:var(--ink); color:var(--paper); font-family:'DM Mono',monospace; font-size:10px; letter-spacing:3px; text-transform:uppercase; border:none; cursor:pointer; transition:opacity 0.2s; white-space:nowrap; }
+.email-submit:hover { opacity:0.85; }
+.privacy-note { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:1px; color:var(--faint); margin-top:12px; }
+
+.results-wrap { display:none; }
+.results-wrap.active { display:block; }
+.results-hero { background:var(--ink); padding:52px 72px; margin-bottom:3px; }
+.result-tag { font-family:'DM Mono',monospace; font-size:8px; letter-spacing:4px; text-transform:uppercase; color:#4a4540; margin-bottom:20px; display:block; }
+.result-score-row { display:flex; align-items:flex-end; gap:32px; margin-bottom:28px; }
+.result-score-b2 { font-family:'Libre Baskerville',serif; font-size:clamp(52px,7vw,80px); font-weight:700; color:var(--paper); line-height:1; letter-spacing:-2px; }
+.result-score-b1 { font-family:'Libre Baskerville',serif; font-size:clamp(28px,4vw,44px); font-weight:700; color:#4a4540; line-height:1; letter-spacing:-1px; padding-bottom:8px; }
+.result-score-labels { display:flex; flex-direction:column; gap:4px; padding-bottom:10px; }
+.score-label-text { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:2px; text-transform:uppercase; }
+.score-label-b2 { color:var(--paper); }
+.score-label-b1 { color:#4a4540; }
+.result-verdict { font-size:clamp(22px,3vw,32px); font-weight:700; color:var(--paper); line-height:1.2; margin-bottom:16px; letter-spacing:-0.5px; }
+.result-desc { font-size:15px; line-height:1.85; color:#9a9288; max-width:520px; }
+
+.results-breakdown { background:var(--paper); padding:48px 72px; margin-bottom:3px; position:relative; overflow:hidden; }
+.results-breakdown::before { content:''; position:absolute; inset:0; background-image:repeating-linear-gradient(0deg,transparent,transparent 27px,rgba(0,0,0,0.016) 27px,rgba(0,0,0,0.016) 28px); pointer-events:none; }
+.breakdown-title { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:4px; text-transform:uppercase; color:var(--faint); margin-bottom:28px; display:flex; align-items:center; gap:16px; }
+.breakdown-title::after { content:''; flex:1; height:1px; background:var(--rule); }
+.s-dim-row { display:grid; grid-template-columns:160px 1fr 32px; gap:0 16px; align-items:center; padding:12px 0; border-bottom:1px solid var(--rule); position:relative; }
+.s-dim-row:last-child { border-bottom:none; }
+.s-dim-name { font-family:'DM Mono',monospace; font-size:10px; letter-spacing:1px; color:var(--mid); }
+.s-dim-bar-track { height:4px; background:var(--deep); position:relative; }
+.s-dim-bar-fill { height:100%; background:var(--ink); transition:width 0.8s ease; }
+.s-dim-bar-fill.b1 { background:var(--faint); }
+.s-dim-score { font-family:'DM Mono',monospace; font-size:12px; color:var(--ink); text-align:right; }
+
+.matrix-result { background:var(--paper); padding:48px 72px; margin-bottom:3px; position:relative; overflow:hidden; }
+.matrix-result::before { content:''; position:absolute; inset:0; background-image:repeating-linear-gradient(0deg,transparent,transparent 27px,rgba(0,0,0,0.016) 27px,rgba(0,0,0,0.016) 28px); pointer-events:none; }
+.mini-matrix { display:grid; grid-template-columns:1fr 1fr; grid-template-rows:1fr 1fr; gap:3px; background:var(--rule); border:1px solid var(--rule); max-width:480px; margin:24px 0; }
+.mini-q { background:var(--deep); padding:20px 22px; position:relative; }
+.mini-q.active { background:var(--ink); }
+.mini-q-name { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:2px; text-transform:uppercase; color:var(--faint); margin-bottom:6px; display:block; }
+.mini-q.active .mini-q-name { color:#6a6460; }
+.mini-q-title { font-size:14px; font-weight:700; color:var(--mid); line-height:1.2; }
+.mini-q.active .mini-q-title { color:var(--paper); }
+.mini-q.active::after { content:'★'; position:absolute; bottom:16px; right:16px; font-size:12px; color:#4a4540; }
+
+.cta-block { background:var(--ink); padding:48px 72px; margin-bottom:3px; }
+.cta-label { font-family:'DM Mono',monospace; font-size:8px; letter-spacing:4px; text-transform:uppercase; color:#4a4540; margin-bottom:16px; display:block; }
+.cta-title { font-size:clamp(20px,2.8vw,28px); font-weight:700; color:var(--paper); line-height:1.25; margin-bottom:16px; letter-spacing:-0.3px; }
+.cta-text { font-size:14px; color:#9a9288; line-height:1.8; margin-bottom:28px; max-width:480px; }
+.cta-btn { display:inline-block; background:var(--paper); color:var(--ink); font-family:'DM Mono',monospace; font-size:10px; letter-spacing:3px; text-transform:uppercase; padding:14px 28px; border:none; cursor:pointer; text-decoration:none; transition:opacity 0.2s; }
+.cta-btn:hover { opacity:0.85; }
+
+.contact-foot { background:var(--paper); padding:28px 72px; display:flex; justify-content:space-between; align-items:center; border-top:1px solid var(--rule); }
+.contact-name { font-size:18px; font-weight:700; color:var(--ink); }
+.contact-details { font-family:'DM Mono',monospace; font-size:10px; letter-spacing:1.5px; color:var(--faint); text-align:right; line-height:1.8; }
+.contact-details a { color:var(--faint); text-decoration:none; }
+
+.submit-section { background:var(--paper); padding:36px 72px; margin-bottom:3px; display:none; position:relative; }
+.submit-section.active { display:block; }
+.error-msg { font-family:'DM Mono',monospace; font-size:10px; letter-spacing:1px; color:#a04040; margin-top:12px; display:none; }
+.error-msg.active { display:block; }
+.start-btn { display:inline-block; background:var(--ink); color:var(--paper); font-family:'DM Mono',monospace; font-size:10px; letter-spacing:3px; text-transform:uppercase; padding:14px 28px; border:none; cursor:pointer; transition:opacity 0.2s; }
+.start-btn:hover { opacity:0.85; }
+
+/* ════════════════════════════════════════
+   RESPONSIVE
+════════════════════════════════════════ */
+@media (max-width: 640px) {
+  .header-inner, .body, .page-foot, .memo-header { padding-left:24px; padding-right:24px; }
+  .framework { grid-template-columns:1fr; }
+  .brain-1 { border-right:1px solid var(--rule); border-bottom:none; }
+  .brain-2 { border-left:1px solid var(--ink); border-top:none; }
+  .brain-vs { display:none; }
+  .case { grid-template-columns:1fr; }
+  .case-co { border-right:none; border-bottom:1px solid var(--rule); padding:16px 0; }
+  .case-body { padding:16px 0; }
+  .proof-list li { grid-template-columns:1fr; gap:4px; }
+  .three-way { grid-template-columns:1fr; }
+  .matrix-grid { grid-template-columns:1fr 1fr; }
+  .q { width:auto; height:auto; min-height:160px; }
+  #api-banner { padding-left:24px; padding-right:24px; }
+  .vs-grid { grid-template-columns:1fr; gap:20px; }
+  .vs-center { display:none; }
+  .b-scoreboard { grid-template-columns:1fr; }
+  .b-score-center { display:none; }
+  .b-bottom-grid { grid-template-columns:1fr; }
+  .b-dim-row { grid-template-columns:1fr 80px 1fr; }
+  .section-header, .questions-wrap, .email-gate, .results-hero, .results-breakdown, .matrix-result, .cta-block, .contact-foot, .submit-section, .s-progress-wrap { padding-left:24px; padding-right:24px; }
+  .scale { flex-direction:column; align-items:flex-start; }
+  .email-form { flex-direction:column; }
+  .email-input { border-right:1px solid var(--rule); border-bottom:none; }
+  .contact-foot { flex-direction:column; gap:12px; align-items:flex-start; }
+  .tab-btn { padding:12px 6px; font-size:7px; letter-spacing:1.5px; }
+}
+
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════
+     SITE HEADER + TAB NAV
+═══════════════════════════════════════ -->
+<div class="site-header">
+  <div class="header-inner">
+    <div style="font-family:'DM Mono',monospace; font-size:9px; letter-spacing:3px; text-transform:uppercase; color:var(--faint); margin-bottom:16px;">Philip Ahlqwist &nbsp;·&nbsp; Brand Strategist &amp; Equity Partner</div>
+    <h1 class="site-title">The Two Brains<br>Framework</h1>
+  </div>
+  <nav class="tab-nav">
+    <button class="tab-btn active" onclick="switchTab('whitepaper')">
+      <span class="tab-num">01</span>White Paper
+    </button>
+    <button class="tab-btn" onclick="switchTab('score')">
+      <span class="tab-num">02</span>Brain 2 Score
+    </button>
+    <button class="tab-btn" onclick="switchTab('battle')">
+      <span class="tab-num">03</span>Battle Mode
+    </button>
+  </nav>
+</div>
+
+<!-- ═══════════════════════════════════════
+     TAB 1 — WHITE PAPER
+═══════════════════════════════════════ -->
+<div id="tab-whitepaper" class="section-wrap active">
+
+<!-- PAGE 1 -->
+<div class="page">
+  <div class="memo-header">
+    <div class="memo-meta">
+      <span class="memo-label">TO:</span>
+      <span>Anyone who has watched a worse company beat a better one and couldn't explain it</span>
+      <span class="memo-label">FROM:</span>
+      <span>The person who can</span>
+      <span class="memo-label">RE:</span>
+      <span>The most expensive blind spot in modern capital allocation</span>
+    </div>
+    <h1 class="memo-title">Markets don't reward the best company.<br>They reward the one that feels inevitable.</h1>
+  </div>
+
+  <div class="body">
+    <p class="lede">Every serious investor has seen it. A company with inferior product, less capital and weaker distribution beats the one that had everything going for it. Not once. Repeatedly. Across categories. That is not bad luck. It is a structural phenomenon — and most capital frameworks have no model for it.</p>
+    <p>The company that won did not win on fundamentals. It won on something that looks like brand from the outside and functions like infrastructure from the inside. It created the conditions under which the market found it easiest to believe.</p>
+    <p>That condition has a name. <strong>Inevitability.</strong> And it is not a marketing outcome. It is a capital allocation outcome — one that compounds faster than product, distributes itself cheaper than advertising, and becomes harder to compete with every year it is left uncontested.</p>
+    <p>Most portfolios are not built for it. Not for lack of ambition. Because building inevitability requires a fundamentally different kind of intelligence than the one most organisations are structured around.</p>
+
+    <div class="sec"><span class="sec-num">§ 1</span><div class="sec-rule"></div><span class="sec-label">The Framework</span></div>
+
+    <p>Every high-performing company, studied across sectors and stages, is built around two fundamentally different kinds of intelligence. Most organisations have one. The ones that become category-defining have both.</p>
+
+    <div class="framework">
+      <div class="brain brain-1">
+        <p class="brain-label">Brain 1 — Operational Intelligence</p>
+        <p class="brain-title">Optimises.</p>
+        <ul class="brain-items">
+          <li>Product &amp; technology</li>
+          <li>Pricing &amp; margin</li>
+          <li>Distribution &amp; efficiency</li>
+          <li>Process &amp; systems</li>
+          <li>Measurable in quarters</li>
+        </ul>
+      </div>
+      <div class="brain-vs"><span class="brain-vs-inner">versus</span></div>
+      <div class="brain brain-2">
+        <p class="brain-label">Brain 2 — Meaning Intelligence</p>
+        <p class="brain-title">Makes inevitable.</p>
+        <ul class="brain-items">
+          <li>Narrative &amp; category definition</li>
+          <li>Cultural signal &amp; identity</li>
+          <li>Investor &amp; talent gravity</li>
+          <li>Belief architecture</li>
+          <li>Compounds over decades</li>
+        </ul>
+      </div>
+    </div>
+
+    <p>Brain 1 advantages decay. A better product can be built. A more efficient process can be copied. A lower price can be matched. As technology converges faster than ever, the edge that took a decade to build can be replicated in months. AI is accelerating this. Every operational advantage that once required years of institutional knowledge can now be compressed, automated and commoditised. Brain 1 is becoming a baseline, not a moat.</p>
+    <p>Brain 2 advantages compound. Belief, once earned, is extraordinarily difficult to dislodge. The company that becomes the reference point in its category does not simply retain customers — <strong>it redefines what the category is measured against.</strong> Competitors stop competing with the product and start competing with the expectation the company has created.</p>
+
+    <div class="pull">
+      <p class="pull-text">"The single greatest value you can create lies in branding — clarifying what the market is, positioning the company in that market, and removing everything that does not match. And I mean everything."</p>
+      <p class="pull-attr">Partner, major VC firm — written unprompted, after managing 20 portfolio companies</p>
+    </div>
+
+    <p>Most organisations are built entirely around Brain 1. The dashboards measure it. The boards review it. The incentives reward it. Brain 2 is acknowledged in strategy decks and underfunded in every budget cycle.</p>
+    <p>These two brains have been tilting away from each other for decades. That gap is where value disappears. Across technology, consumer goods, finance and software, the companies that define the meaning of their category capture disproportionate value within it.</p>
+    <p>Investors think they are funding companies. In reality, they are funding future narratives. Brain 1 determines whether the company can execute that narrative. <strong>Brain 2 determines whether anyone will believe it.</strong></p>
+    <p>Markets are efficient at pricing performance. They are inefficient at recognising belief. <strong>That gap is where the returns are.</strong></p>
+    <p>Brain 2 is consistently underinvested — not because it doesn't work, but because it's hard to measure. And what can't be measured rarely gets a seat at the table. This is a mistake with a price tag.</p>
+    <p>Jeff Bezos once said that advertising is the tax you pay for an unimaginative product. Amazon is now one of the world's largest buyers of advertising. Even the most operationally brilliant minds eventually arrive at the same conclusion.</p>
+    <p>The CFO who stops asking <strong>"what can brand cost?"</strong> and starts asking <strong>"how much do you need?"</strong> — that's not a change of budget. That's a change of understanding. And it changes what the company is worth.</p>
+
+    <div class="matrix-embed">
+      <div class="header">
+        <div class="sec" style="margin-top:0;">
+          <span class="sec-num">PHILIP AHLQWIST &nbsp;·&nbsp; THE TWO BRAINS FRAMEWORK</span>
+          <div class="sec-rule"></div>
+        </div>
+        <p style="font-family:'Libre Baskerville',Georgia,serif; font-size:clamp(20px,2.8vw,28px); font-weight:700; line-height:1.1; letter-spacing:-0.01em; color:var(--ink); margin:16px 0 0;">Where does your company sit?</p>
+        <p style="margin-top:10px; font-family:'DM Mono',monospace; font-size:11px; color:var(--faint); letter-spacing:0.04em;">Brain 1 builds the product.&nbsp;&nbsp; Brain 2 decides which company becomes the reference point.</p>
+      </div>
+      <div class="matrix-wrap">
+        <div class="axis-y-label-inline">Emotional Excellence &nbsp;·&nbsp; Brain 2</div>
+        <div class="axis-x-arrow"></div>
+        <div class="axis-x-label">Operational excellence &nbsp;·&nbsp; Brain 1</div>
+        <div class="matrix-grid">
+          <div class="q q-tl">
+            <div><span class="q-number">01 &nbsp;—&nbsp; HIGH MEANING / LOW OPERATIONS</span><div class="q-name">Compelling<br>but fragile.</div><p class="q-body">Culturally ahead. Structurally at risk. Defines the conversation — but can't always scale it.</p></div>
+            <span class="q-tag">Ahead of the market</span>
+          </div>
+          <div class="q q-tr">
+            <div><span class="q-number">02 &nbsp;—&nbsp; HIGH MEANING / HIGH OPERATIONS</span><div class="q-name">The inevitable<br>company.</div><p class="q-body">Excellent and believed in. Defines the category. Attracts capital, talent and loyalty without asking.</p></div>
+            <span class="q-tag">The destination</span>
+          </div>
+          <div class="q q-bl">
+            <div><span class="q-number">03 &nbsp;—&nbsp; LOW MEANING / LOW OPERATIONS</span><div class="q-name">The forgettable<br>company.</div><p class="q-body">Neither excellent nor believed in. Competes on price. Exists until something more interesting arrives.</p></div>
+            <span class="q-tag">At risk</span>
+          </div>
+          <div class="q q-br">
+            <div><span class="q-number">04 &nbsp;—&nbsp; LOW MEANING / HIGH OPERATIONS</span><div class="q-name">The replicable<br>company.</div><p class="q-body">Operationally sound. Strategically exposed. Efficient — until a better operator enters the category.</p></div>
+            <span class="q-tag">Most portfolios</span>
+          </div>
+        </div>
+      </div>
+      <div style="margin-top:32px; padding-top:20px; border-top:1px solid var(--rule); display:flex; justify-content:space-between; align-items:flex-end; gap:32px;">
+        <p class="footer-axiom">Operational improvement alone is a path to the bottom-right. <strong>The unrealised value in most portfolios sits in the move from replicable to inevitable.</strong></p>
+        <div style="font-family:'DM Mono',monospace; font-size:10px; letter-spacing:0.14em; color:var(--faint); white-space:nowrap; text-align:right; flex-shrink:0;">Philip Ahlqwist<br>ahlqwist.com</div>
+      </div>
+    </div>
+
+    <div class="sec"><span class="sec-num">§ 2</span><div class="sec-rule"></div><span class="sec-label">The Signal</span></div>
+
+    <p>Most companies measure success by what they push out. Sales numbers. Awareness metrics. Share of voice. These are Brain 1 metrics: useful, visible, quarterly.</p>
+    <p>But there is a different signal. One that cannot be bought, gamed or manufactured. It arrives unannounced.</p>
+    <p><em>The moment a company becomes inevitable is not when it scales distribution. It's when distribution starts seeking the company.</em></p>
+    <p>Brands reach out to collaborate. Retailers known for curating the future of a category want the product on their shelves. Cultural actors, journalists, athletes, investors — start referencing the company without being asked. The best talent applies before there's a vacancy.</p>
+
+    <div class="pull"><p class="pull-text">Gravity is the only growth signal that cannot be bought, forced or faked.</p></div>
+
+    <p>Maurten never reached out to Nike for a partnership. Nike came to them — and ultimately made Maurten only the second brand ever permitted to sell inside Nike's flagship stores. The first was Apple.</p>
+    <p><em>That is not distribution. That is orbit.</em></p>
+
+    <div class="pull"><p class="pull-text">There is one company I know better than any other.</p></div>
+
+    <p>I joined as a shareholder in 2017. I wrote the principles it still navigates by. I built the identity that made it recognisable before anyone outside Sweden had heard of it.</p>
+    <p>In 2019 I conceived a campaign that ran for fourteen days during the Tour de France on a total budget of 1.5 million SEK, a media spend of 300,000 SEK.</p>
+    <p>It reached nine million people. Site traffic increased by 146%. Revenue increased by 28%. It won at Cresta, D&amp;AD, the One Show and the Golden Egg. It was shortlisted at Cannes. The head of Nike Running wrote unsolicited to call it genius.</p>
+    <p>I still own equity in the company today.</p>
+    <p><em>That is what Brain 2 looks like when it works.</em></p>
+
+    <p>Brain 1 can create a better product, a better price, better distribution. <strong>Brain 2 creates something else entirely: Gravity.</strong> The force that pulls talent, capital, culture and distribution toward a company, without proportional effort.</p>
+
+    <div class="pull"><p class="pull-text">Meaning creates Gravity. Gravity creates Inevitability. And inevitability is the only truly durable competitive advantage.</p></div>
+  </div>
+  <div class="page-foot"><span class="page-num">01 — 05</span><span class="page-name">Philip Ahlqwist</span></div>
+</div>
+
+<!-- PAGE 2 -->
+<div class="page">
+  <div class="body" style="padding-top:52px;">
+    <div class="sec" style="margin-top:0;"><span class="sec-num">§ 2</span><div class="sec-rule"></div><span class="sec-label">The Evidence</span></div>
+    <p>The data below is not a marketing argument. It is a capital allocation finding. These numbers do not prove that brand is important. They quantify the return differential between companies that build meaning and companies that do not.</p>
+
+    <table class="data-table">
+      <thead><tr><th>Figure</th><th>Finding</th><th>The capital implication</th></tr></thead>
+      <tbody>
+        <tr><td>414%</td><td>Shareholder returns for strong brands over 17 years vs. the S&P 500</td><td>This is not a brand metric. It is a compounding return on Brain 2 applied consistently. The gap widens every year it is neglected — and every year a competitor builds it instead.</td></tr>
+        <tr><td>95%</td><td>Of all purchase decisions are primarily emotional, not rational</td><td>The companies you back are investing almost entirely in the 5% — product features, rational messaging, technical differentiation. The other 95% of the decision is being left to chance.</td></tr>
+        <tr><td>20%</td><td>Revenue premium commanded by strong brands vs. category average</td><td>Pricing power is not a product feature. It is a belief condition. Companies with strong Brain 2 do not compete on price — they set it.</td></tr>
+        <tr><td>3–5×</td><td>Exit multiple premium for category-defining companies vs. market-following peers</td><td>Acquirers are not buying your revenue. They are buying the belief the company has created. Brain 2 is the multiplier at exit — and the asset most acquirers will pay the highest premium to own.</td></tr>
+      </tbody>
+    </table>
+
+    <div class="pull"><p class="pull-text">The question is never whether brand creates value. The question is whether the value it creates is captured — or left on the table for someone else to buy at exit.</p></div>
+
+    <div class="sec"><span class="sec-num">§ 3</span><div class="sec-rule"></div><span class="sec-label">The Evidence — Case Studies</span></div>
+    <p>These are not theoretical examples. They are companies with observable Brain 2 advantages that translated directly into measurable capital outcomes.</p>
+
+    <div class="cases">
+      <div class="case">
+        <div class="case-co"><span class="case-co-name">Oatly</span><span class="case-co-tag">Food &amp; Bev · IPO 2021</span></div>
+        <div class="case-body">Listed at a $10B valuation on revenues that most consumer brands would not dream of justifying at that multiple. <strong>The premium was not product.</strong> Oatly had meaningful competitors with comparable or superior oat milk. The premium was cultural position — the company had become the symbol of a shift, not just a participant in it. Investors were buying the narrative, not the liquid.</div>
+      </div>
+      <div class="case">
+        <div class="case-co"><span class="case-co-name">Maurten</span><span class="case-co-tag">Sports nutrition</span></div>
+        <div class="case-body">A Swedish sports nutrition company that built product and belief simultaneously. <strong>Nike came to them.</strong> Maurten became the only sports nutrition brand permitted to sell inside Nike flagship stores — a distribution privilege never previously granted to any brand except Apple. This is Brain 2 operating at maximum efficiency: distribution sought them, not the other way around.</div>
+      </div>
+      <div class="case">
+        <div class="case-co"><span class="case-co-name">On Running</span><span class="case-co-tag">Footwear · NYSE: ONON</span></div>
+        <div class="case-body">Listed in 2021 at a significant premium to established footwear peers. <strong>The multiple reflected perceived trajectory, not current size.</strong> On had built the belief that it was where running was going — not where it had been. Its Brain 2 score at IPO was disproportionately high relative to its Brain 1 scale. The market priced the story, not just the shoes.</div>
+      </div>
+    </div>
+
+    <div class="highlight">
+      <p>In each case, the mechanism is the same. A company builds a structural condition — a belief, a narrative, a cultural position — that causes the market to assign value beyond what current performance justifies. That is not irrational. <strong>It is the market correctly pricing future gravity.</strong></p>
+      <p>The companies that fail to build this condition get priced on fundamentals alone. And fundamentals alone are always exposed to the next better operator.</p>
+    </div>
+  </div>
+  <div class="page-foot"><span class="page-num">02 — 05</span><span class="page-name">Philip Ahlqwist</span></div>
+</div>
+
+<!-- PAGE 3 -->
+<div class="page">
+  <div class="body" style="padding-top:52px;">
+    <div class="sec" style="margin-top:0;"><span class="sec-num">§ 4</span><div class="sec-rule"></div><span class="sec-label">The Proof of Work</span></div>
+    <p>The framework is not theoretical. It has been built, tested and applied across companies at different stages, in different categories, with different capital structures. What follows is a selective record of where Brain 2 has been the operating principle.</p>
+
+    <ul class="proof-list">
+      <li>
+        <div class="co">Maurten<span class="role-badge">Equity Partner &amp; Brand Lead</span></div>
+        <div>From a small Swedish lab producing hydrogel sports nutrition to a global brand with <strong>Nike, the world's largest athletes, and the world's fastest marathon runners</strong> as inbound partners. The entire commercial expansion was driven by Brain 2: the product created belief, and belief created distribution. Not the other way around.</div>
+      </li>
+      <li>
+        <div class="co">Marcel Paris<span class="role-badge">Co-Builder</span></div>
+        <div>Built alongside Fred Raillard and Farid Mokart from a small creative agency to a <strong>multi-award winning operation</strong> with global reach. The agency's commercial success was built entirely on Brain 2: a strong, distinctive narrative and cultural positioning that allowed it to attract talent and clients disproportionate to its size.</div>
+      </li>
+      <li>
+        <div class="co">Volontaire<span class="role-badge">Founder</span></div>
+        <div>Founded and built to <strong>Cannes Grand Prix</strong> — the industry's highest recognition. A demonstration that Brain 2, applied to its own category, can achieve the highest measurable outcome in that category.</div>
+      </li>
+    </ul>
+
+    <div class="sec"><span class="sec-num">§ 5</span><div class="sec-rule"></div><span class="sec-label">The Causal Chain</span></div>
+    <p>Brain 2 is not a soft asset that sits beside the business. It is a structural multiplier that operates through a specific causal sequence. Understanding the chain is what separates companies that build it deliberately from those that acquire it by accident — or not at all.</p>
+
+    <span class="causal">The sequence</span>
+    <div class="sequence">
+      <div class="seq-row">
+        <span class="seq-num">01</span>
+        <div class="seq-connector"><div class="seq-dot"></div><div class="seq-line"></div></div>
+        <div class="seq-content"><p class="seq-title">Narrative clarity</p><p class="seq-body">The company articulates what category it is in, why it exists, and why it wins. Internally coherent. Externally differentiating.</p></div>
+      </div>
+      <div class="seq-row">
+        <span class="seq-num">02</span>
+        <div class="seq-connector"><div class="seq-dot"></div><div class="seq-line"></div></div>
+        <div class="seq-content"><p class="seq-title">Category definition</p><p class="seq-body">The company begins to define the terms of the category, not just compete within them. Others start to be measured against it.</p></div>
+      </div>
+      <div class="seq-row">
+        <span class="seq-num">03</span>
+        <div class="seq-connector"><div class="seq-dot"></div><div class="seq-line"></div></div>
+        <div class="seq-content"><p class="seq-title">Gravity formation</p><p class="seq-body">Inbound signals begin to appear. Talent, media, partners and capital start moving toward the company without proportional effort.</p></div>
+      </div>
+      <div class="seq-row accent">
+        <span class="seq-num">04</span>
+        <div class="seq-connector"><div class="seq-dot"></div><div class="seq-line"></div></div>
+        <div class="seq-content"><p class="seq-title">Inevitability</p><p class="seq-body">The company becomes the reference point in its category. Market assigns a structural premium — in price, multiple, and perceived trajectory — that compounds independently of product.</p></div>
+      </div>
+      <div class="seq-row accent">
+        <span class="seq-num">05</span>
+        <div class="seq-connector"><div class="seq-dot"></div><div class="seq-line"></div></div>
+        <div class="seq-content"><p class="seq-title">Multiple expansion</p><p class="seq-body">At exit, acquirers compete not for revenue but for narrative ownership. The company commands a premium that cannot be explained by fundamentals alone.</p></div>
+      </div>
+    </div>
+  </div>
+  <div class="page-foot"><span class="page-num">03 — 05</span><span class="page-name">Philip Ahlqwist</span></div>
+</div>
+
+<!-- PAGE 4 -->
+<div class="page">
+  <div class="body" style="padding-top:52px;">
+    <div class="sec" style="margin-top:0;"><span class="sec-num">§ 6</span><div class="sec-rule"></div><span class="sec-label">The Engagement</span></div>
+
+    <div class="offer-box">
+      <span class="offer-box-label">What this is</span>
+      <p>A direct engagement with a strategist who has built Brain 2 at equity level — not as a consultant brought in to advise, but as a partner whose returns depend on the outcome. The work is diagnostic, strategic and executional. It begins with a clear picture of where the company sits and ends with a structural change in how the market perceives it.</p>
+      <p>The output is not a brand refresh. It is a repositioning of the company's narrative architecture — the foundational condition for everything that follows.</p>
+    </div>
+
+    <div class="three-way">
+      <div class="offer-col">
+        <span class="offer-col-tag">Entry point</span>
+        <p class="offer-col-title">The Brain 2 Diagnostic</p>
+        <p>A scored assessment of where the company currently sits across seven Brain 2 dimensions and five Brain 1 dimensions. Delivered as a working document. Used as the basis for everything that follows.</p>
+      </div>
+      <div class="offer-col">
+        <span class="offer-col-tag">Ongoing</span>
+        <p class="offer-col-title">Strategic Partnership</p>
+        <p>Retained engagement. Philip operates as a senior strategic partner — attending board and leadership sessions, owning the narrative architecture, and building Brain 2 as a structural asset over time.</p>
+      </div>
+      <div class="offer-col">
+        <span class="offer-col-tag">For portfolios</span>
+        <p class="offer-col-title">Portfolio Brain 2 Audit</p>
+        <p>A systematic diagnostic run across an entire portfolio. Identifies the companies with the largest Brain 2 gap — and quantifies what closing it is worth at exit. Delivered as an investor-ready report.</p>
+      </div>
+    </div>
+
+    <div class="ask-box">
+      <span class="ask-box-label">The ask</span>
+      <p class="ask-box-title">One conversation. One company. Thirty minutes.</p>
+      <p>We will identify in thirty minutes whether there is a Brain 2 gap — and what closing it is worth in real numbers. If there is no gap, you have lost nothing. If there is — <strong>you will know exactly what you have been leaving on the table.</strong></p>
+      <p style="margin-top:20px;"><a href="/cdn-cgi/l/email-protection#e2928a8b8e8b92a2838a8e93958b9196cc818d8f" style="color:var(--paper); font-family:'DM Mono',monospace; font-size:10px; letter-spacing:3px; text-transform:uppercase; text-decoration:none; border-bottom:1px solid #4a4540; padding-bottom:2px;">Book a conversation with Philip →</a></p>
+    </div>
+  </div>
+  <div class="page-foot"><span class="page-num">04 — 05</span><span class="page-name">Philip Ahlqwist</span></div>
+</div>
+
+</div><!-- end tab-whitepaper -->
+
+
+<!-- ═══════════════════════════════════════
+     TAB 2 — BATTLE MODE
+═══════════════════════════════════════ -->
+<div id="tab-battle" class="section-wrap">
+
+<div class="page">
+  <div class="memo-header">
+    <div class="memo-meta">
+      <span class="memo-label">FROM:</span>
+      <span>Philip Ahlqwist · Two Brains Framework</span>
+      <span class="memo-label">RE:</span>
+      <span>Head-to-head strategic analysis across 12 dimensions</span>
+    </div>
+    <h2 class="memo-title">Two Brains<br>Battle Mode</h2>
+  </div>
+
+  <div id="api-banner">
+    <label for="api-key-input">API Key</label>
+    <input id="api-key-input" type="password" placeholder="sk-ant-..." spellcheck="false" autocomplete="off">
+    <button id="api-key-save">Save</button>
+    <span id="api-key-status"></span>
+    <span style="margin-left:auto; font-family:'DM Mono',monospace; font-size:9px; color:var(--faint); cursor:pointer;" id="nav-history-btn">Past Battles (<span id="history-count">0</span>) →</span>
+  </div>
+
+  <!-- HOME VIEW -->
+  <div id="bview-home" class="bv active">
+    <div class="body">
+      <p style="font-style:italic; color:var(--ink); font-size:16px; line-height:1.75; margin-bottom:32px;">Two companies. Twelve dimensions. One verdict. Not who's bigger — who has structural advantage.</p>
+      <div class="sec" style="margin-top:0;"><span class="sec-num">01</span><div class="sec-rule"></div><span class="sec-label">Select Entities</span></div>
+      <div class="vs-grid">
+        <div><label class="vs-label" style="color:var(--a)">Entity A</label><input id="input-a" class="entity-input" placeholder="Challenger" autocomplete="off"></div>
+        <div class="vs-center">VS</div>
+        <div><label class="vs-label" style="color:var(--b)">Entity B</label><input id="input-b" class="entity-input" placeholder="Contender" autocomplete="off"></div>
+      </div>
+      <div class="sec" style="margin-top:36px;"><span class="sec-num">02</span><div class="sec-rule"></div><span class="sec-label">Analysis Depth</span></div>
+      <div class="depth-grid">
+        <div class="depth-opt" data-mode="quick"><div class="opt-label">Quick</div><div class="opt-sub">~15 sec · fast verdict</div></div>
+        <div class="depth-opt active" data-mode="deep"><div class="opt-label">Deep</div><div class="opt-sub">~30 sec · full analysis</div></div>
+      </div>
+      <button id="btn-start">Begin Analysis →</button>
+      <div class="surprise-wrap">
+        <button id="btn-surprise">⚡ Surprise Me</button>
+        <div class="surprise-sub">50+ matchups — brands, clubs, ideas, icons, movements</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FIGHTING VIEW -->
+  <div id="bview-fighting" class="bv">
+    <div class="body">
+      <div class="fight-names">
+        <div class="fight-name-a" id="fight-a-side"><div class="fight-letter">Entity A</div><div class="fight-name-text" id="fight-a-name"></div></div>
+        <div class="fight-vs">—</div>
+        <div class="fight-name-b" id="fight-b-side"><div class="fight-letter">Entity B</div><div class="fight-name-text" id="fight-b-name"></div></div>
+      </div>
+      <div id="fight-loading">
+        <div class="b-spinner"></div>
+        <div class="b-progress-wrap"><div class="b-progress-fill" id="progress-fill"></div></div>
+        <div class="fight-status" id="fight-status">Analysing...</div>
+        <div class="fight-pct" id="fight-pct">0%</div>
+      </div>
+      <div id="fight-error" style="display:none; margin-top:32px;">
+        <div class="b-error-box">
+          <div class="b-error-title">Error</div>
+          <div class="b-error-msg" id="error-msg-text"></div>
+          <div class="b-error-btns">
+            <button class="btn-mono" id="btn-retry-quick" style="display:none">Retry as Quick</button>
+            <button class="btn-mono" id="btn-retry">Retry</button>
+            <button class="btn-mono faint" id="btn-error-back">← Back</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RESULT VIEW -->
+  <div id="bview-result" class="bv">
+    <div class="body">
+      <div class="sec" style="margin-top:0;"><span class="sec-num">—</span><div class="sec-rule"></div><span class="sec-label">Scoreboard</span></div>
+      <div class="b-scoreboard" id="result-scoreboard"></div>
+      <div class="sec"><span class="sec-num">—</span><div class="sec-rule"></div><span class="sec-label">Verdict</span></div>
+      <div class="b-verdict-block" id="result-verdict-block">
+        <div class="b-verdict-meta"><span class="b-verdict-margin" id="result-margin-text"></span><span class="b-verdict-limited" id="result-limited" style="display:none">⚠ Limited data</span></div>
+        <div class="b-verdict-headline" id="result-headline"></div>
+      </div>
+      <p class="b-verdict-analysis" id="result-analysis"></p>
+      <div class="b-decisive-bar"><div class="b-decisive-label">Decisive dimension</div><div class="b-decisive-text" id="result-decisive"></div></div>
+      <div class="sec"><span class="sec-num">B2</span><div class="sec-rule"></div><span class="sec-label">Meaning Intelligence</span></div>
+      <div class="b-brain-section">
+        <div class="b-brain-header"><span class="bh-a" id="b2-a-name"></span><span class="bh-c">Brain 2 — 7 dimensions</span><span class="bh-b" id="b2-b-name"></span></div>
+        <div id="b2-rows"></div>
+      </div>
+      <div class="sec"><span class="sec-num">B1</span><div class="sec-rule"></div><span class="sec-label">Operational Intelligence</span></div>
+      <div class="b-brain-section">
+        <div class="b-brain-header"><span class="bh-a" id="b1-a-name"></span><span class="bh-c">Brain 1 — 5 dimensions</span><span class="bh-b" id="b1-b-name"></span></div>
+        <div id="b1-rows"></div>
+      </div>
+      <div class="b-bottom-grid">
+        <div class="b-path-card"><div class="b-card-title" id="path-title"></div><p class="b-card-text" id="path-text"></p></div>
+        <div class="b-wildcard-card"><div class="b-card-title">Wildcard</div><p class="b-card-text italic" id="wildcard-text"></p></div>
+      </div>
+      <div class="b-action-btns">
+        <button id="btn-share">↗ Share</button>
+        <button id="btn-download">↓ Download</button>
+        <button id="btn-new">← New Battle</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- HISTORY VIEW -->
+  <div id="bview-history" class="bv">
+    <div class="body">
+      <div class="sec" style="margin-top:0;"><span class="sec-num">—</span><div class="sec-rule"></div><span class="b-history-title" id="history-title">Battle History</span></div>
+      <div id="history-list"></div>
+      <div style="margin-top:28px;"><button class="btn-mono faint" id="btn-history-back">← Back</button></div>
+    </div>
+  </div>
+
+  <div class="page-foot"><span class="page-num">Two Brains Framework</span><span class="page-name">Philip Ahlqwist · +46 76 773 04 54</span></div>
+</div>
+
+</div><!-- end tab-battle -->
+
+
+<!-- ═══════════════════════════════════════
+     TAB 3 — BRAIN 2 SCORE
+═══════════════════════════════════════ -->
+<div id="tab-score" class="section-wrap">
+
+<div class="lang-bar">
+  <button class="lang-btn active" onclick="setLang('en')">EN</button>
+  <button class="lang-btn" onclick="setLang('sv')">SV</button>
+</div>
+
+<!-- HERO -->
+<div class="page" id="hero-section">
+  <div class="memo-header">
+    <div class="memo-meta">
+      <span class="memo-label">FROM:</span>
+      <span data-en="Philip Ahlqwist — Brand Strategist & Equity Partner" data-sv="Philip Ahlqwist — Varumärkesstrateg & Equity Partner">Philip Ahlqwist — Brand Strategist & Equity Partner</span>
+      <span class="memo-label">RE:</span>
+      <span data-en="A diagnostic for companies that want to become inevitable" data-sv="En genomlysning för bolag som vill bli oundvikliga">A diagnostic for companies that want to become inevitable</span>
+    </div>
+    <h2 class="memo-title" data-en="Where does your company sit — and where should it?" data-sv="Var sitter ditt bolag — och var borde det sitta?">Where does your company sit — and where should it?</h2>
+  </div>
+  <div class="body">
+    <p class="lede" data-en="Most companies are built almost entirely around operational intelligence. What they rarely build is the structural condition that makes them the obvious choice in their category. This tool measures both — and shows you where the gap is." data-sv="De flesta bolag byggs nästan uteslutande kring operationell intelligens. Det man sällan bygger är det strukturella tillståndet som gör bolaget till det självklara valet i sin kategori. Det här verktyget mäter båda — och visar var gapet finns.">Most companies are built almost entirely around operational intelligence. What they rarely build is the structural condition that makes them the obvious choice in their category. This tool measures both — and shows you where the gap is.</p>
+    <button class="start-btn" onclick="startQuiz()" data-en="Start the diagnostic" data-sv="Starta genomlysningen">Start the diagnostic</button>
+    <span style="display:block; margin-top:12px; font-family:'DM Mono',monospace; font-size:9px; letter-spacing:2px; color:var(--faint);" data-en="5–7 minutes · 12 dimensions · one result" data-sv="5–7 minuter · 12 dimensioner · ett resultat">5–7 minutes · 12 dimensions · one result</span>
+  </div>
+</div>
+
+<!-- QUIZ -->
+<div class="quiz-wrap" id="quiz-section">
+  <div class="s-progress-wrap">
+    <div class="s-progress-track"><div class="s-progress-fill" id="progress-fill-s"></div></div>
+    <span class="s-progress-text" id="progress-text-s">0 / 12</span>
+  </div>
+
+  <!-- B2 -->
+  <div class="section-card">
+    <div class="section-header">
+      <span class="section-tag" data-en="Part 1 of 2" data-sv="Del 1 av 2">Part 1 of 2</span>
+      <h3 class="section-title" data-en="Brain 2 — Meaning Intelligence" data-sv="Brain 2 — Meningsintelligens">Brain 2 — Meaning Intelligence</h3>
+      <p class="section-desc" data-en="Score 1–5: 1 = absent, 3 = partial, 5 = dominant" data-sv="Betygsätt 1–5: 1 = saknas, 3 = delvis, 5 = dominant">Score 1–5: 1 = absent, 3 = partial, 5 = dominant</p>
+    </div>
+    <div class="questions-wrap">
+      <div class="question" data-dim="b2_1"><span class="q-label" data-en="01 — Narrative Clarity" data-sv="01 — Narrativ klarhet">01 — Narrative Clarity</span><p class="q-text" data-en="Can your company clearly articulate what market it's in, why it exists, and why it wins?" data-sv="Kan ditt bolag tydligt formulera vilket marknad det är på, varför det finns, och varför det vinner?">Can your company clearly articulate what market it's in, why it exists, and why it wins?</p><p class="q-hint" data-en="Test: ask 3 people internally. Do you get the same answer?" data-sv="Test: fråga 3 personer internt. Får du samma svar?">Test: ask 3 people internally. Do you get the same answer?</p><div class="scale"><span class="scale-label" data-en="Inconsistent" data-sv="Inkonsekvent">Inconsistent</span><div class="scale-btns" data-dim="b2_1"><button class="scale-btn" onclick="selectScore(this,'b2_1',1)">1</button><button class="scale-btn" onclick="selectScore(this,'b2_1',2)">2</button><button class="scale-btn" onclick="selectScore(this,'b2_1',3)">3</button><button class="scale-btn" onclick="selectScore(this,'b2_1',4)">4</button><button class="scale-btn" onclick="selectScore(this,'b2_1',5)">5</button></div><span class="scale-label right" data-en="Precise, differentiated" data-sv="Precis, differentierad">Precise, differentiated</span></div></div>
+      <div class="question" data-dim="b2_2"><span class="q-label" data-en="02 — Category Position" data-sv="02 — Kategoriposition">02 — Category Position</span><p class="q-text" data-en="Is your company defining the category — or competing within one?" data-sv="Definierar ditt bolag kategorin — eller konkurrerar det inom en?">Is your company defining the category — or competing within one?</p><p class="q-hint" data-en="Remove the brand name. Is the positioning still unique?" data-sv="Ta bort varumärkesnamnet. Är positioneringen fortfarande unik?">Remove the brand name. Is the positioning still unique?</p><div class="scale"><span class="scale-label" data-en="Fully substitutable" data-sv="Helt substituerbar">Fully substitutable</span><div class="scale-btns" data-dim="b2_2"><button class="scale-btn" onclick="selectScore(this,'b2_2',1)">1</button><button class="scale-btn" onclick="selectScore(this,'b2_2',2)">2</button><button class="scale-btn" onclick="selectScore(this,'b2_2',3)">3</button><button class="scale-btn" onclick="selectScore(this,'b2_2',4)">4</button><button class="scale-btn" onclick="selectScore(this,'b2_2',5)">5</button></div><span class="scale-label right" data-en="Sets category terms" data-sv="Sätter kategorins villkor">Sets category terms</span></div></div>
+      <div class="question" data-dim="b2_3"><span class="q-label" data-en="03 — Talent Pull" data-sv="03 — Talangattraktionskraft">03 — Talent Pull</span><p class="q-text" data-en="Does your company attract high-quality talent without active outreach?" data-sv="Attraherar ditt bolag topptalang utan aktiv rekrytering?">Does your company attract high-quality talent without active outreach?</p><p class="q-hint" data-en="Signals: inbound applications from top-tier profiles; candidates referencing the company unprompted." data-sv="Signaler: inkommande ansökningar från topprofiler; kandidater som nämner bolaget spontant.">Signals: inbound applications from top-tier profiles; candidates referencing the company unprompted.</p><div class="scale"><span class="scale-label" data-en="Must chase talent" data-sv="Måste jaga talang">Must chase talent</span><div class="scale-btns" data-dim="b2_3"><button class="scale-btn" onclick="selectScore(this,'b2_3',1)">1</button><button class="scale-btn" onclick="selectScore(this,'b2_3',2)">2</button><button class="scale-btn" onclick="selectScore(this,'b2_3',3)">3</button><button class="scale-btn" onclick="selectScore(this,'b2_3',4)">4</button><button class="scale-btn" onclick="selectScore(this,'b2_3',5)">5</button></div><span class="scale-label right" data-en="Talent seeks them out" data-sv="Talang söker dem">Talent seeks them out</span></div></div>
+      <div class="question" data-dim="b2_4"><span class="q-label" data-en="04 — Perceived Pricing Power" data-sv="04 — Prissättningskraft">04 — Perceived Pricing Power</span><p class="q-text" data-en="Before product validation — what does the brand signal?" data-sv="Innan produktvalidering — vad signalerar varumärket?">Before product validation — what does the brand signal?</p><p class="q-hint" data-en="Cold exposure: does it feel premium, neutral, or commoditised?" data-sv="Kallt exponering: känns det premium, neutralt eller commoditiserat?">Cold exposure: does it feel premium, neutral, or commoditised?</p><div class="scale"><span class="scale-label" data-en="Price-sensitive" data-sv="Priskänslig">Price-sensitive</span><div class="scale-btns" data-dim="b2_4"><button class="scale-btn" onclick="selectScore(this,'b2_4',1)">1</button><button class="scale-btn" onclick="selectScore(this,'b2_4',2)">2</button><button class="scale-btn" onclick="selectScore(this,'b2_4',3)">3</button><button class="scale-btn" onclick="selectScore(this,'b2_4',4)">4</button><button class="scale-btn" onclick="selectScore(this,'b2_4',5)">5</button></div><span class="scale-label right" data-en="Commands premium" data-sv="Tar premiumpriser">Commands premium</span></div></div>
+      <div class="question" data-dim="b2_5"><span class="q-label" data-en="05 — Cultural Presence" data-sv="05 — Kulturell närvaro">05 — Cultural Presence</span><p class="q-text" data-en="Does the company exist outside its own channels?" data-sv="Existerar bolaget utanför sina egna kanaler?">Does the company exist outside its own channels?</p><p class="q-hint" data-en="Signals: organic mentions, third-party references, earned attention." data-sv="Signaler: organiska omnämnanden, tredjepartsreferenser, förtjänad uppmärksamhet.">Signals: organic mentions, third-party references, earned attention.</p><div class="scale"><span class="scale-label" data-en="Invisible" data-sv="Osynlig">Invisible</span><div class="scale-btns" data-dim="b2_5"><button class="scale-btn" onclick="selectScore(this,'b2_5',1)">1</button><button class="scale-btn" onclick="selectScore(this,'b2_5',2)">2</button><button class="scale-btn" onclick="selectScore(this,'b2_5',3)">3</button><button class="scale-btn" onclick="selectScore(this,'b2_5',4)">4</button><button class="scale-btn" onclick="selectScore(this,'b2_5',5)">5</button></div><span class="scale-label right" data-en="Consistently referenced" data-sv="Konsekvent refererad">Consistently referenced</span></div></div>
+      <div class="question" data-dim="b2_6"><span class="q-label" data-en="06 — Partner Gravity" data-sv="06 — Partnergravitation">06 — Partner Gravity</span><p class="q-text" data-en="Do relevant partners initiate contact?" data-sv="Tar relevanta partners kontakt på eget initiativ?">Do relevant partners initiate contact?</p><p class="q-hint" data-en="Signals: inbound collaboration requests; platform and distribution interest." data-sv="Signaler: inkommande samarbetsförfrågningar; plattforms- och distributionsintresse.">Signals: inbound collaboration requests; platform and distribution interest.</p><div class="scale"><span class="scale-label" data-en="Fully outbound" data-sv="Helt utåtriktat">Fully outbound</span><div class="scale-btns" data-dim="b2_6"><button class="scale-btn" onclick="selectScore(this,'b2_6',1)">1</button><button class="scale-btn" onclick="selectScore(this,'b2_6',2)">2</button><button class="scale-btn" onclick="selectScore(this,'b2_6',3)">3</button><button class="scale-btn" onclick="selectScore(this,'b2_6',4)">4</button><button class="scale-btn" onclick="selectScore(this,'b2_6',5)">5</button></div><span class="scale-label right" data-en="Inbound-led" data-sv="Inkommande-styrt">Inbound-led</span></div></div>
+      <div class="question" data-dim="b2_7"><span class="q-label" data-en="07 — Language Adoption" data-sv="07 — Språkadoption">07 — Language Adoption</span><p class="q-text" data-en="Is the company's way of describing the category adopted by others?" data-sv="Adopteras bolagets sätt att beskriva kategorin av andra?">Is the company's way of describing the category adopted by others?</p><p class="q-hint" data-en="Do customers, media, or competitors use their terminology?" data-sv="Använder kunder, media eller konkurrenter deras terminologi?">Do customers, media, or competitors use their terminology?</p><div class="scale"><span class="scale-label" data-en="No adoption" data-sv="Ingen adoption">No adoption</span><div class="scale-btns" data-dim="b2_7"><button class="scale-btn" onclick="selectScore(this,'b2_7',1)">1</button><button class="scale-btn" onclick="selectScore(this,'b2_7',2)">2</button><button class="scale-btn" onclick="selectScore(this,'b2_7',3)">3</button><button class="scale-btn" onclick="selectScore(this,'b2_7',4)">4</button><button class="scale-btn" onclick="selectScore(this,'b2_7',5)">5</button></div><span class="scale-label right" data-en="Defines market language" data-sv="Definierar marknadsspråket">Defines market language</span></div></div>
+    </div>
+  </div>
+
+  <!-- B1 -->
+  <div class="section-card">
+    <div class="section-header">
+      <span class="section-tag" data-en="Part 2 of 2" data-sv="Del 2 av 2">Part 2 of 2</span>
+      <h3 class="section-title" data-en="Brain 1 — Operational Intelligence" data-sv="Brain 1 — Operationell intelligens">Brain 1 — Operational Intelligence</h3>
+      <p class="section-desc" data-en="Score 1–5: 1 = absent, 3 = partial, 5 = dominant" data-sv="Betygsätt 1–5: 1 = saknas, 3 = delvis, 5 = dominant">Score 1–5: 1 = absent, 3 = partial, 5 = dominant</p>
+    </div>
+    <div class="questions-wrap">
+      <div class="question" data-dim="b1_1"><span class="q-label" data-en="08 — Product Strength" data-sv="08 — Produktstyrka">08 — Product Strength</span><p class="q-text" data-en="How strong is your product vs. direct competitors?" data-sv="Hur stark är er produkt jämfört med direkta konkurrenter?">How strong is your product vs. direct competitors?</p><p class="q-hint" data-en="Consider: quality, differentiation, defensibility" data-sv="Ta hänsyn till: kvalitet, differentiering, försvarsbarhet">Consider: quality, differentiation, defensibility</p><div class="scale"><span class="scale-label" data-en="Below market" data-sv="Under marknad">Below market</span><div class="scale-btns" data-dim="b1_1"><button class="scale-btn" onclick="selectScore(this,'b1_1',1)">1</button><button class="scale-btn" onclick="selectScore(this,'b1_1',2)">2</button><button class="scale-btn" onclick="selectScore(this,'b1_1',3)">3</button><button class="scale-btn" onclick="selectScore(this,'b1_1',4)">4</button><button class="scale-btn" onclick="selectScore(this,'b1_1',5)">5</button></div><span class="scale-label right" data-en="Category-leading" data-sv="Kategoryledande">Category-leading</span></div></div>
+      <div class="question" data-dim="b1_2"><span class="q-label" data-en="09 — Operational Efficiency" data-sv="09 — Operationell effektivitet">09 — Operational Efficiency</span><p class="q-text" data-en="How well-run is the organisation?" data-sv="Hur välskött är organisationen?">How well-run is the organisation?</p><p class="q-hint" data-en="Consider: processes, margins, team efficiency" data-sv="Ta hänsyn till: processer, marginaler, teameffektivitet">Consider: processes, margins, team efficiency</p><div class="scale"><span class="scale-label" data-en="Inefficient" data-sv="Ineffektiv">Inefficient</span><div class="scale-btns" data-dim="b1_2"><button class="scale-btn" onclick="selectScore(this,'b1_2',1)">1</button><button class="scale-btn" onclick="selectScore(this,'b1_2',2)">2</button><button class="scale-btn" onclick="selectScore(this,'b1_2',3)">3</button><button class="scale-btn" onclick="selectScore(this,'b1_2',4)">4</button><button class="scale-btn" onclick="selectScore(this,'b1_2',5)">5</button></div><span class="scale-label right" data-en="Best-in-class" data-sv="Bäst i klassen">Best-in-class</span></div></div>
+      <div class="question" data-dim="b1_3"><span class="q-label" data-en="10 — Distribution Reach" data-sv="10 — Distributionsräckvidd">10 — Distribution Reach</span><p class="q-text" data-en="How strong is your distribution infrastructure and market access?" data-sv="Hur stark är er distributionsinfrastruktur och marknadstillgång?">How strong is your distribution infrastructure and market access?</p><p class="q-hint" data-en="Consider: channels, partnerships, geographic coverage" data-sv="Ta hänsyn till: kanaler, partnerskap, geografisk täckning">Consider: channels, partnerships, geographic coverage</p><div class="scale"><span class="scale-label" data-en="Limited" data-sv="Begränsad">Limited</span><div class="scale-btns" data-dim="b1_3"><button class="scale-btn" onclick="selectScore(this,'b1_3',1)">1</button><button class="scale-btn" onclick="selectScore(this,'b1_3',2)">2</button><button class="scale-btn" onclick="selectScore(this,'b1_3',3)">3</button><button class="scale-btn" onclick="selectScore(this,'b1_3',4)">4</button><button class="scale-btn" onclick="selectScore(this,'b1_3',5)">5</button></div><span class="scale-label right" data-en="Strong, scalable" data-sv="Stark, skalbar">Strong, scalable</span></div></div>
+      <div class="question" data-dim="b1_4"><span class="q-label" data-en="11 — Financial Resilience" data-sv="11 — Finansiell motståndskraft">11 — Financial Resilience</span><p class="q-text" data-en="How financially robust is the business?" data-sv="Hur finansiellt robust är bolaget?">How financially robust is the business?</p><p class="q-hint" data-en="Consider: runway, revenue growth, churn rate" data-sv="Ta hänsyn till: runway, intäktstillväxt, churn">Consider: runway, revenue growth, churn rate</p><div class="scale"><span class="scale-label" data-en="Precarious" data-sv="Osäker">Precarious</span><div class="scale-btns" data-dim="b1_4"><button class="scale-btn" onclick="selectScore(this,'b1_4',1)">1</button><button class="scale-btn" onclick="selectScore(this,'b1_4',2)">2</button><button class="scale-btn" onclick="selectScore(this,'b1_4',3)">3</button><button class="scale-btn" onclick="selectScore(this,'b1_4',4)">4</button><button class="scale-btn" onclick="selectScore(this,'b1_4',5)">5</button></div><span class="scale-label right" data-en="Strong fundamentals" data-sv="Starka fundamenta">Strong fundamentals</span></div></div>
+      <div class="question" data-dim="b1_5"><span class="q-label" data-en="12 — Pricing Structure" data-sv="12 — Prisstruktur">12 — Pricing Structure</span><p class="q-text" data-en="How well-optimised is your pricing vs. the value you deliver?" data-sv="Hur väl optimerad är er prissättning i förhållande till det värde ni levererar?">How well-optimised is your pricing vs. the value you deliver?</p><p class="q-hint" data-en="Consider: premium vs. market, price sensitivity, willingness to pay" data-sv="Ta hänsyn till: premium vs. marknad, priskänslighet, betalningsvilja">Consider: premium vs. market, price sensitivity, willingness to pay</p><div class="scale"><span class="scale-label" data-en="Competing on price" data-sv="Konkurrerar på pris">Competing on price</span><div class="scale-btns" data-dim="b1_5"><button class="scale-btn" onclick="selectScore(this,'b1_5',1)">1</button><button class="scale-btn" onclick="selectScore(this,'b1_5',2)">2</button><button class="scale-btn" onclick="selectScore(this,'b1_5',3)">3</button><button class="scale-btn" onclick="selectScore(this,'b1_5',4)">4</button><button class="scale-btn" onclick="selectScore(this,'b1_5',5)">5</button></div><span class="scale-label right" data-en="Strong pricing power" data-sv="Stark prissättningskraft">Strong pricing power</span></div></div>
+    </div>
+  </div>
+
+  <div class="submit-section" id="submit-section-s">
+    <button class="start-btn" onclick="checkAndShowGate()" data-en="See my results →" data-sv="Visa mina resultat →">See my results →</button>
+    <p class="error-msg" id="error-msg-s" data-en="Please answer all 12 questions before continuing." data-sv="Vänligen svara på alla 12 frågor innan du fortsätter.">Please answer all 12 questions before continuing.</p>
+  </div>
+</div>
+
+<!-- EMAIL GATE -->
+<div class="email-gate" id="email-gate">
+  <h2 class="gate-title" data-en="One step before your results." data-sv="Ett steg innan ditt resultat.">One step before your results.</h2>
+  <p class="gate-sub" data-en="Enter your email and we'll send you a full breakdown — plus what it means for your growth trajectory." data-sv="Ange din e-post så skickar vi en fullständig genomgång — och vad det betyder för din tillväxtbana.">Enter your email and we'll send you a full breakdown — plus what it means for your growth trajectory.</p>
+  <div class="email-form">
+    <input type="email" class="email-input" id="email-input" placeholder="your@email.com" />
+    <button class="email-submit" onclick="submitEmail()" data-en="Reveal my score" data-sv="Visa mitt resultat">Reveal my score</button>
+  </div>
+  <p class="privacy-note" data-en="No spam. One relevant email from Philip Ahlqwist." data-sv="Ingen spam. Ett relevant mail från Philip Ahlqwist.">No spam. One relevant email from Philip Ahlqwist.</p>
+</div>
+
+<!-- RESULTS -->
+<div class="results-wrap" id="results-section">
+  <div class="results-hero">
+    <span class="result-tag" data-en="Your Brain 2 Score — Philip Ahlqwist Diagnostic" data-sv="Ditt Brain 2 Score — Philip Ahlqwist Diagnostik">Your Brain 2 Score — Philip Ahlqwist Diagnostic</span>
+    <div class="result-score-row">
+      <div class="result-score-b2" id="result-b2-display">—</div>
+      <div class="result-score-b1" id="result-b1-display">—</div>
+      <div class="result-score-labels">
+        <span class="score-label-text score-label-b2" data-en="Brain 2 Score" data-sv="Brain 2 Score">Brain 2 Score</span>
+        <span class="score-label-text score-label-b1" data-en="Brain 1 Score" data-sv="Brain 1 Score">Brain 1 Score</span>
+      </div>
+    </div>
+    <div class="result-verdict" id="result-verdict-s">—</div>
+    <p class="result-desc" id="result-desc-s">—</p>
+  </div>
+  <div class="results-breakdown">
+    <div class="breakdown-title" data-en="Brain 2 — Dimension breakdown" data-sv="Brain 2 — Dimensionsuppdelning">Brain 2 — Dimension breakdown</div>
+    <div id="b2-breakdown"></div>
+    <div class="breakdown-title" style="margin-top:32px;" data-en="Brain 1 — Dimension breakdown" data-sv="Brain 1 — Dimensionsuppdelning">Brain 1 — Dimension breakdown</div>
+    <div id="b1-breakdown"></div>
+  </div>
+  <div class="matrix-result">
+    <div class="breakdown-title" data-en="Where you sit" data-sv="Var du befinner dig">Where you sit</div>
+    <div class="mini-matrix">
+      <div class="mini-q" id="mq-tl"><span class="mini-q-name" data-en="High Meaning / Low Operations" data-sv="Hög Mening / Låg Drift">High Meaning / Low Operations</span><div class="mini-q-title" data-en="Compelling but fragile" data-sv="Övertygande men skör">Compelling but fragile</div></div>
+      <div class="mini-q" id="mq-tr"><span class="mini-q-name" data-en="High Meaning / High Operations" data-sv="Hög Mening / Hög Drift">High Meaning / High Operations</span><div class="mini-q-title" data-en="The inevitable company" data-sv="Det oundvikliga bolaget">The inevitable company</div></div>
+      <div class="mini-q" id="mq-bl"><span class="mini-q-name" data-en="Low Meaning / Low Operations" data-sv="Låg Mening / Låg Drift">Low Meaning / Low Operations</span><div class="mini-q-title" data-en="The forgettable company" data-sv="Det glömbara bolaget">The forgettable company</div></div>
+      <div class="mini-q" id="mq-br"><span class="mini-q-name" data-en="Low Meaning / High Operations" data-sv="Låg Mening / Hög Drift">Low Meaning / High Operations</span><div class="mini-q-title" data-en="The replicable company" data-sv="Det replikerbara bolaget">The replicable company</div></div>
+    </div>
+    <p style="font-size:13px; color:var(--faint); font-family:'DM Mono',monospace; letter-spacing:0.3px; margin-top:16px; line-height:1.7;" id="matrix-note">—</p>
+  </div>
+  <div class="cta-block">
+    <span class="cta-label" data-en="The next step" data-sv="Nästa steg">The next step</span>
+    <h2 class="cta-title" data-en="One conversation. One company. Thirty minutes." data-sv="Ett samtal. Ett bolag. Trettio minuter.">One conversation. One company. Thirty minutes.</h2>
+    <p class="cta-text" data-en="We will identify in thirty minutes whether there is a Brain 2 gap — and what closing it is worth in real numbers." data-sv="Vi identifierar på trettio minuter om det finns ett Brain 2-gap — och vad det är värt i riktiga siffror.">We will identify in thirty minutes whether there is a Brain 2 gap — and what closing it is worth in real numbers.</p>
+    <a class="cta-btn" href="/cdn-cgi/l/email-protection#52223a3b3e3b2212333a3e23253b21267c313d3f" data-en="Book a conversation with Philip" data-sv="Boka ett samtal med Philip">Book a conversation with Philip</a>
+  </div>
+  <div class="contact-foot">
+    <div class="contact-name">Philip Ahlqwist</div>
+    <div class="contact-details">CD · Brand Strategist · Entrepreneur · Investor<br>+46 76 773 04 54<br><a href="https://www.linkedin.com/in/philipahlqwist">linkedin.com/in/philipahlqwist</a></div>
+  </div>
+</div>
+
+</div><!-- end tab-score -->
+
+
+<!-- SHARE MODAL -->
+<div id="share-modal">
+  <div class="share-card-wrap">
+    <div class="share-card" id="share-card-inner"></div>
+    <div class="share-actions">
+      <button class="btn-copy-li" id="btn-copy-li">Copy LinkedIn Post</button>
+      <button class="btn-close-modal" id="btn-close-modal">Close</button>
+    </div>
+    <div class="share-hint">Screenshot the card above to share on social media</div>
+  </div>
+</div>
+
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+// ════════════════════════════════════
+// TAB SWITCHING
+// ════════════════════════════════════
+function switchTab(id) {
+  document.querySelectorAll('.section-wrap').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  const btns = document.querySelectorAll('.tab-btn');
+  const map = {whitepaper:0, score:1, battle:2};
+  btns[map[id]].classList.add('active');
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+// ════════════════════════════════════
+// BATTLE MODE
+// ════════════════════════════════════
+const A_COLOR = "#8a5a38";
+const B_COLOR = "#2a5a78";
+
+const SURPRISE_BATTLES = [
+  ["McDonald's","Burger King"],["Coca-Cola","Pepsi"],["Oatly","Alpro"],
+  ["Nespresso","Starbucks"],["Red Bull","Monster"],["Heineken","Budweiser"],
+  ["Ben & Jerry's","Häagen-Dazs"],["Apple","Samsung"],["Spotify","Apple Music"],
+  ["Netflix","HBO"],["Google","Microsoft"],["TikTok","Instagram"],["OpenAI","Anthropic"],
+  ["Nike","Adidas"],["Supreme","Palace"],["IKEA","H&M"],["Rolex","Patek Philippe"],
+  ["Gucci","Louis Vuitton"],["Arsenal","Chelsea"],["Real Madrid","Barcelona"],
+  ["Liverpool","Manchester United"],["Hammarby","Djurgården"],["Zlatan","Messi"],
+  ["Tesla","BMW"],["Ferrari","Lamborghini"],["Volvo","Saab"],["ABBA","Roxette"],
+  ["Klarna","Zettle"],["Dogs","Cats"],["Mac","PC"],["Louis Vuitton","Hermès"],
+  ["Churchill","Roosevelt"],["Thatcher","Blair"],["Viking","Roman"],
+];
+
+const DIM_LABELS = {
+  narrative_clarity:"Narrative Clarity", category_position:"Category Position",
+  talent_pull:"Talent Pull", perceived_pricing_power:"Perceived Pricing Power",
+  cultural_presence:"Cultural Presence", partner_gravity:"Partner Gravity",
+  language_adoption:"Language Adoption", product_strength:"Product Strength",
+  operational_efficiency:"Operational Efficiency", distribution_reach:"Distribution Reach",
+  financial_resilience:"Financial Resilience", pricing_structure:"Pricing Structure",
+};
+
+const BATTLE_SYSTEM = `You are Philip Ahlqwist's Two Brains battle engine. You conduct head-to-head strategic analysis of two companies, clubs, brands, or any entities using the Two Brains framework.
+
+THE TWO BRAINS FRAMEWORK:
+Brain 2 = Meaning Intelligence (narrative, belief, gravity, cultural weight)
+Brain 1 = Operational Intelligence (product, efficiency, distribution, financials)
+
+IMPORTANT — HANDLING OBSCURE OR LOCAL ENTITIES:
+If one or both entities are obscure, local, niche, or you have limited data, you MUST still complete the full analysis. Use whatever signals you can find or reasonably infer. Score conservatively where data is thin. Set "data_confidence" to "limited" in your response.
+
+SCORING DIMENSIONS:
+BRAIN 2 (Meaning Intelligence) — score each entity 1–5:
+1. Narrative Clarity, 2. Category Position, 3. Talent Pull, 4. Perceived Pricing Power, 5. Cultural Presence, 6. Partner Gravity, 7. Language Adoption
+
+BRAIN 1 (Operational Intelligence) — score each entity 1–5:
+8. Product Strength, 9. Operational Efficiency, 10. Distribution Reach, 11. Financial Resilience, 12. Pricing Structure
+
+Be opinionated. Be direct. Don't hedge. Write like someone who has seen 200 organisations.
+
+RESPOND ONLY WITH VALID JSON — no markdown, no preamble:
+{"entity_a":"Name","entity_b":"Name","category":"one word","context":"2 sentence framing","data_confidence":"full","b2_battles":{"narrative_clarity":{"a_score":4,"b_score":3,"winner":"A","insight":"One sharp sentence"},"category_position":{"a_score":3,"b_score":4,"winner":"B","insight":"..."},"talent_pull":{"a_score":3,"b_score":4,"winner":"B","insight":"..."},"perceived_pricing_power":{"a_score":4,"b_score":3,"winner":"A","insight":"..."},"cultural_presence":{"a_score":3,"b_score":4,"winner":"B","insight":"..."},"partner_gravity":{"a_score":3,"b_score":3,"winner":"TIE","insight":"..."},"language_adoption":{"a_score":4,"b_score":2,"winner":"A","insight":"..."}},"b1_battles":{"product_strength":{"a_score":4,"b_score":3,"winner":"A","insight":"..."},"operational_efficiency":{"a_score":3,"b_score":4,"winner":"B","insight":"..."},"distribution_reach":{"a_score":4,"b_score":4,"winner":"TIE","insight":"..."},"financial_resilience":{"a_score":4,"b_score":3,"winner":"A","insight":"..."},"pricing_structure":{"a_score":3,"b_score":3,"winner":"TIE","insight":"..."}},"a_b2_total":24,"b_b2_total":23,"a_b1_total":18,"b_b1_total":17,"a_wins":5,"b_wins":4,"ties":3,"overall_winner":"A","margin":"Narrow","knockout_dimension":"The single dimension that most explains why the winner wins","verdict":{"winner_name":"Entity A","loser_name":"Entity B","headline":"Sharp, opinionated one-liner verdict","analysis":"3–4 sentences. What does the winner do structurally that the loser cannot easily replicate?","loser_path_forward":"2 sentences. The ONE thing they would need to change first."},"wildcard":"One surprising or counterintuitive observation that most analysts would miss"}`;
+
+let apiKey = localStorage.getItem("tb_api_key") || "";
+let currentMode = "deep";
+let currentA = "", currentB = "";
+let currentResult = null;
+let bHistory = JSON.parse(localStorage.getItem("tb_history") || "[]");
+let progressInterval = null;
+
+const apiKeyInput = document.getElementById("api-key-input");
+const apiKeyStatus = document.getElementById("api-key-status");
+if (apiKey) { apiKeyInput.value = apiKey; apiKeyStatus.textContent = "✓ Saved"; }
+document.getElementById("api-key-save").addEventListener("click", () => {
+  apiKey = apiKeyInput.value.trim();
+  localStorage.setItem("tb_api_key", apiKey);
+  apiKeyStatus.textContent = "✓ Saved";
+  setTimeout(() => apiKeyStatus.textContent = "", 2000);
+});
+
+function showBView(id) {
+  document.querySelectorAll(".bv").forEach(v => v.classList.remove("active"));
+  const el = document.getElementById("bview-" + id);
+  if (el) el.classList.add("active");
+}
+
+document.getElementById("nav-history-btn").addEventListener("click", () => { renderBHistory(); showBView("history"); });
+document.getElementById("btn-history-back").addEventListener("click", () => showBView("home"));
+
+document.querySelectorAll(".depth-opt").forEach(opt => {
+  opt.addEventListener("click", () => {
+    document.querySelectorAll(".depth-opt").forEach(o => o.classList.remove("active"));
+    opt.classList.add("active");
+    currentMode = opt.dataset.mode;
+  });
+});
+
+const inputA = document.getElementById("input-a");
+const inputB = document.getElementById("input-b");
+const btnStart = document.getElementById("btn-start");
+function updateStartBtn() { btnStart.classList.toggle("ready", !!(inputA.value.trim() && inputB.value.trim())); }
+inputA.addEventListener("input", updateStartBtn);
+inputB.addEventListener("input", updateStartBtn);
+inputA.addEventListener("keydown", e => e.key === "Enter" && startBattle());
+inputB.addEventListener("keydown", e => e.key === "Enter" && startBattle());
+
+document.getElementById("btn-surprise").addEventListener("click", () => {
+  const pick = SURPRISE_BATTLES[Math.floor(Math.random() * SURPRISE_BATTLES.length)];
+  inputA.value = pick[0]; inputB.value = pick[1]; updateStartBtn();
+});
+btnStart.addEventListener("click", startBattle);
+
+document.getElementById("history-count").textContent = bHistory.length;
+
+function saveHistory(entry) {
+  bHistory.unshift(entry); bHistory = bHistory.slice(0, 30);
+  localStorage.setItem("tb_history", JSON.stringify(bHistory));
+  document.getElementById("history-count").textContent = bHistory.length;
+}
+
+function renderBHistory() {
+  const list = document.getElementById("history-list");
+  document.getElementById("history-title").textContent = `Battle History — ${bHistory.length} matchups`;
+  if (bHistory.length === 0) { list.innerHTML = '<p class="b-history-empty">No battles yet.</p>'; return; }
+  list.innerHTML = bHistory.map((h, i) => `
+    <div class="b-history-row" data-index="${i}">
+      <div><div class="b-history-entity">${h.entity_a}</div><div class="b-history-pts">${h.a_b2_total+h.a_b1_total} pts</div></div>
+      <div class="b-history-vs">VS</div>
+      <div><div class="b-history-entity">${h.entity_b}</div><div class="b-history-pts">${h.b_b2_total+h.b_b1_total} pts</div></div>
+      <div class="b-history-winner-badge">${h.overall_winner==="A"?h.entity_a:h.overall_winner==="B"?h.entity_b:"TIE"} wins</div>
+    </div>`).join("");
+  list.querySelectorAll(".b-history-row").forEach(row => {
+    row.addEventListener("click", () => { currentResult = bHistory[+row.dataset.index]; renderResult(currentResult); showBView("result"); });
+  });
+}
+
+async function startBattle() {
+  currentA = inputA.value.trim(); currentB = inputB.value.trim();
+  if (!currentA || !currentB) return;
+  if (!apiKey) { alert("Klistra in din Anthropic API-nyckel i fältet högst upp."); return; }
+  showBView("fighting");
+  document.getElementById("fight-a-name").textContent = currentA;
+  document.getElementById("fight-b-name").textContent = currentB;
+  document.getElementById("fight-a-side").style.animation = "pulse 1.5s ease-in-out infinite";
+  document.getElementById("fight-b-side").style.animation = "pulse 1.5s ease-in-out infinite 0.75s";
+  document.getElementById("fight-loading").style.display = "block";
+  document.getElementById("fight-error").style.display = "none";
+  setProgress(0); setStatus("Analysing...");
+  const startTime = Date.now();
+  progressInterval = setInterval(() => { setProgress(Math.round(Math.min(((Date.now()-startTime)/30000)*90,90))); }, 200);
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 45000);
+  try {
+    const response = await fetch("https://api.anthropic.com/v1/messages", {
+      method:"POST", signal:controller.signal,
+      headers:{"Content-Type":"application/json","x-api-key":apiKey,"anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true"},
+      body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:4000,system:BATTLE_SYSTEM,messages:[{role:"user",content:`Head-to-head Two Brains battle: ${currentA} vs ${currentB}. Score all 12 dimensions and return valid JSON only.`}]})
+    });
+    clearInterval(progressInterval); clearTimeout(timeoutId); setProgress(93); setStatus("Parsing...");
+    if (!response.ok) { const e = await response.text(); throw new Error(`API ${response.status}: ${e.slice(0,300)}`); }
+    const data = await response.json();
+    if (data.error) throw new Error(data.error.message || "API error");
+    const textBlocks = (data.content||[]).filter(b=>b.type==="text").map(b=>b.text);
+    if (!textBlocks.length) throw new Error(`No text block. stop_reason=${data.stop_reason}`);
+    const rawMatch = textBlocks.join("\n").match(/\{[\s\S]*\}/);
+    if (!rawMatch) throw new Error("No JSON found in response.");
+    let parsed; try { parsed = JSON.parse(rawMatch[0]); } catch(e) { throw new Error("JSON parse error: "+e.message); }
+    if (!parsed.entity_a||!parsed.b2_battles||!parsed.b1_battles||!parsed.verdict) throw new Error("Incomplete response.");
+    parsed.date = new Date().toISOString(); parsed.mode = currentMode;
+    setProgress(100); currentResult = parsed; saveHistory(parsed);
+    setTimeout(() => { renderResult(parsed); showBView("result"); }, 400);
+  } catch(err) {
+    clearInterval(progressInterval); clearTimeout(timeoutId);
+    document.getElementById("fight-loading").style.display = "none";
+    document.getElementById("fight-error").style.display = "block";
+    document.getElementById("error-msg-text").textContent = err.name==="AbortError" ? "Timeout. Kontrollera din API-nyckel eller försök igen." : (err.message||"Unknown error");
+    document.getElementById("btn-retry-quick").style.display = currentMode==="deep" ? "inline-block" : "none";
+  }
+}
+
+function setProgress(pct) { document.getElementById("progress-fill").style.width=pct+"%"; document.getElementById("fight-pct").textContent=pct+"%"; }
+function setStatus(txt) { document.getElementById("fight-status").textContent=txt; }
+
+document.getElementById("btn-retry-quick").addEventListener("click", () => { currentMode="quick"; document.querySelectorAll(".depth-opt").forEach(o=>o.classList.remove("active")); document.querySelector('[data-mode="quick"]').classList.add("active"); startBattle(); });
+document.getElementById("btn-retry").addEventListener("click", startBattle);
+document.getElementById("btn-error-back").addEventListener("click", () => showBView("home"));
+
+function bPips(score, align, active) {
+  return `<div class="b-pips${align==="right"?" right":""}">${[1,2,3,4,5].map(i=>`<div class="b-pip" style="background:${i<=score?(active?"var(--ink)":"var(--mid)"):"var(--rule)"}"></div>`).join("")}</div>`;
+}
+
+function dimRow(key, val, entityA, entityB, brain, index) {
+  const label = DIM_LABELS[key]||key;
+  const w = val.winner;
+  return `
+  <div class="b-dim-row" style="animation:fadeIn 0.4s ease ${index*0.04}s both">
+    <div class="b-dim-left${w==="B"?" loser":""}">
+      <div class="b-dim-score-row right">${w==="A"?`<span class="b-dim-win-badge">WIN</span>`:""}<span class="b-dim-score${w==="A"?" a":""}">${val.a_score}</span></div>
+      ${bPips(val.a_score,"right",w==="A")}
+    </div>
+    <div class="b-dim-center"><div class="b-dim-brain-tag">${brain}</div><div class="b-dim-name">${label}</div>${w==="TIE"?'<div class="b-dim-tie">TIE</div>':""}</div>
+    <div class="b-dim-right${w==="A"?" loser":""}">
+      <div class="b-dim-score-row"><span class="b-dim-score${w==="B"?" b":""}">${val.b_score}</span>${w==="B"?`<span class="b-dim-win-badge">WIN</span>`:""}</div>
+      ${bPips(val.b_score,"left",w==="B")}
+    </div>
+  </div>
+  <div class="b-dim-insight">${val.insight}</div>`;
+}
+
+function animateNum(el, target) {
+  const start = Date.now();
+  const tick = () => { const p=Math.min((Date.now()-start)/1200,1); el.textContent=Math.round((1-Math.pow(1-p,3))*target); if(p<1) requestAnimationFrame(tick); };
+  requestAnimationFrame(tick);
+}
+
+function renderResult(r) {
+  const aTotal=r.a_b2_total+r.a_b1_total, bTotal=r.b_b2_total+r.b_b1_total;
+  const wA=r.overall_winner==="A", wB=r.overall_winner==="B";
+  const aId="sna-"+Date.now(), bId="snb-"+Date.now();
+  document.getElementById("result-scoreboard").innerHTML=`
+    <div class="b-score-panel b-score-panel-a ${wA?"winner-a":""}">
+      <div class="b-score-name">${r.entity_a}</div>
+      <div class="b-score-num a" id="${aId}">0</div>
+      <div class="b-score-breakdown">B2: ${r.a_b2_total} · B1: ${r.a_b1_total}</div>
+      ${wA?`<div class="b-score-winner-badge">★ Winner</div>`:""}
+    </div>
+    <div class="b-score-center">
+      <div class="b-score-cat">${r.category}</div>
+      <div class="b-score-vs">VS</div>
+      <div class="b-score-wins"><div class="b-score-wins-label">wins</div><div class="b-score-wins-nums"><span style="color:var(--a)">${r.a_wins}</span><span style="color:var(--rule)">·</span><span style="color:var(--b)">${r.b_wins}</span></div></div>
+    </div>
+    <div class="b-score-panel b-score-panel-b ${wB?"winner-b":""}">
+      <div class="b-score-name">${r.entity_b}</div>
+      <div class="b-score-num b" id="${bId}">0</div>
+      <div class="b-score-breakdown">B2: ${r.b_b2_total} · B1: ${r.b_b1_total}</div>
+      ${wB?`<div class="b-score-winner-badge">★ Winner</div>`:""}
+    </div>`;
+  setTimeout(() => { const ea=document.getElementById(aId),eb=document.getElementById(bId); if(ea)animateNum(ea,aTotal); if(eb)animateNum(eb,bTotal); }, 50);
+  document.getElementById("result-margin-text").textContent=`Verdict · ${r.margin} margin`;
+  document.getElementById("result-limited").style.display=r.data_confidence==="limited"?"":"none";
+  document.getElementById("result-headline").textContent=r.verdict.headline;
+  document.getElementById("result-analysis").textContent=r.verdict.analysis;
+  document.getElementById("result-decisive").textContent=r.knockout_dimension;
+  document.getElementById("b2-a-name").textContent=r.entity_a; document.getElementById("b2-b-name").textContent=r.entity_b;
+  document.getElementById("b1-a-name").textContent=r.entity_a; document.getElementById("b1-b-name").textContent=r.entity_b;
+  document.getElementById("b2-rows").innerHTML=Object.entries(r.b2_battles).map(([k,v],i)=>dimRow(k,v,r.entity_a,r.entity_b,"B2",i)).join("");
+  document.getElementById("b1-rows").innerHTML=Object.entries(r.b1_battles).map(([k,v],i)=>dimRow(k,v,r.entity_a,r.entity_b,"B1",i)).join("");
+  document.getElementById("path-title").textContent=`${r.verdict.loser_name} — Path Forward`;
+  document.getElementById("path-text").textContent=r.verdict.loser_path_forward;
+  document.getElementById("wildcard-text").textContent=r.wildcard;
+}
+
+document.getElementById("btn-new").addEventListener("click", () => { inputA.value=""; inputB.value=""; updateStartBtn(); showBView("home"); });
+document.getElementById("btn-share").addEventListener("click", () => { if(!currentResult)return; renderShareCard(currentResult); document.getElementById("share-modal").classList.add("open"); });
+document.getElementById("btn-close-modal").addEventListener("click", () => document.getElementById("share-modal").classList.remove("open"));
+document.getElementById("share-modal").addEventListener("click", e => { if(e.target===document.getElementById("share-modal")) document.getElementById("share-modal").classList.remove("open"); });
+document.getElementById("btn-copy-li").addEventListener("click", () => {
+  if(!currentResult)return;
+  const r=currentResult, wn=r.overall_winner==="A"?r.entity_a:r.overall_winner==="B"?r.entity_b:null;
+  navigator.clipboard.writeText(`🧠 Two Brains Battle: ${r.entity_a} vs ${r.entity_b}\n\n${wn?`Winner: ${wn.toUpperCase()} (${r.margin} margin)`:"Result: TIE"}\n\n"${r.verdict.headline}"\n\nBrain 2 (Meaning): ${r.entity_a} ${r.a_b2_total}/35 · ${r.entity_b} ${r.b_b2_total}/35\nBrain 1 (Operations): ${r.entity_a} ${r.a_b1_total}/25 · ${r.entity_b} ${r.b_b1_total}/25\n\nDecisive dimension: ${r.knockout_dimension}\n\nWildcard: ${r.wildcard}\n\nAnalysed with the Two Brains Framework by Philip Ahlqwist\n#TwoBrains #BrandStrategy #BrandEquity`).then(()=>{ document.getElementById("btn-copy-li").textContent="Copied!"; setTimeout(()=>document.getElementById("btn-copy-li").textContent="Copy LinkedIn Post",2000); }).catch(()=>{});
+});
+
+function renderShareCard(r) {
+  const aT=r.a_b2_total+r.a_b1_total, bT=r.b_b2_total+r.b_b1_total;
+  document.getElementById("share-card-inner").innerHTML=`
+    <div class="share-top-bar"><span style="font-family:'DM Mono',monospace;font-size:8px;letter-spacing:3px;color:var(--faint);text-transform:uppercase">Philip Ahlqwist · Two Brains</span><span style="font-family:'DM Mono',monospace;font-size:8px;letter-spacing:2px;color:var(--faint);text-transform:uppercase">Brand Equity Battle</span></div>
+    <div class="share-matchup">
+      <div style="text-align:center"><div style="font-family:'DM Mono',monospace;font-size:7px;letter-spacing:3px;color:var(--a);margin-bottom:8px;text-transform:uppercase">Entity A</div><div style="font-size:18px;font-weight:700;color:var(--ink);line-height:1.2;margin-bottom:10px">${r.entity_a}</div><div style="font-size:34px;font-weight:700;color:var(--a);letter-spacing:-2px">${aT}</div><div style="font-family:'DM Mono',monospace;font-size:8px;color:var(--faint);margin-top:4px">/ 60 pts</div>${r.overall_winner==="A"?`<div style="margin-top:8px;display:inline-block;background:var(--ink);color:var(--paper);font-family:'DM Mono',monospace;font-size:7px;letter-spacing:3px;padding:3px 8px;text-transform:uppercase">★ Winner</div>`:""}</div>
+      <div style="text-align:center"><div style="font-family:'DM Mono',monospace;font-size:12px;font-weight:700;color:var(--rule);letter-spacing:1px">VS</div><div style="font-family:'DM Mono',monospace;font-size:7px;color:var(--faint);margin-top:6px">${r.category}</div></div>
+      <div style="text-align:center"><div style="font-family:'DM Mono',monospace;font-size:7px;letter-spacing:3px;color:var(--b);margin-bottom:8px;text-transform:uppercase">Entity B</div><div style="font-size:18px;font-weight:700;color:var(--ink);line-height:1.2;margin-bottom:10px">${r.entity_b}</div><div style="font-size:34px;font-weight:700;color:var(--b);letter-spacing:-2px">${bT}</div><div style="font-family:'DM Mono',monospace;font-size:8px;color:var(--faint);margin-top:4px">/ 60 pts</div>${r.overall_winner==="B"?`<div style="margin-top:8px;display:inline-block;background:var(--ink);color:var(--paper);font-family:'DM Mono',monospace;font-size:7px;letter-spacing:3px;padding:3px 8px;text-transform:uppercase">★ Winner</div>`:""}</div>
+    </div>
+    <div class="share-score-bars">${[{label:"Brain 2 · Meaning",a:r.a_b2_total,b:r.b_b2_total,max:35},{label:"Brain 1 · Operations",a:r.a_b1_total,b:r.b_b1_total,max:25}].map(bar=>`<div class="share-bar"><div style="font-family:'DM Mono',monospace;font-size:7px;letter-spacing:2px;color:var(--faint);margin-bottom:6px;text-transform:uppercase">${bar.label}</div><div style="display:flex;gap:3px;align-items:center;margin-bottom:3px"><div style="flex:${bar.a};height:3px;background:var(--a)"></div><div style="flex:${bar.max-bar.a-bar.b};height:3px;background:var(--rule)"></div><div style="flex:${bar.b};height:3px;background:var(--b)"></div></div><div style="display:flex;justify-content:space-between;font-family:'DM Mono',monospace;font-size:8px;color:var(--faint)"><span style="color:var(--a)">${bar.a}</span><span>/${bar.max}</span><span style="color:var(--b)">${bar.b}</span></div></div>`).join("")}</div>
+    <div class="share-verdict"><div style="font-family:'DM Mono',monospace;font-size:7px;letter-spacing:2px;color:var(--faint);text-transform:uppercase;margin-bottom:6px">Verdict · ${r.margin} margin</div><div style="font-size:13px;font-style:italic;color:var(--ink);line-height:1.5;font-weight:700">"${r.verdict.headline}"</div></div>
+    <div class="share-wildcard"><div style="font-family:'DM Mono',monospace;font-size:7px;letter-spacing:2px;color:var(--faint);text-transform:uppercase;margin-bottom:6px">Wildcard</div><div style="font-size:11px;color:var(--mid);font-style:italic;line-height:1.6">${r.wildcard}</div></div>
+    <div class="share-footer"><span style="font-family:'DM Mono',monospace;font-size:7px;letter-spacing:2px;color:var(--faint);text-transform:uppercase">Two Brains Framework</span><span style="font-family:'DM Mono',monospace;font-size:7px;letter-spacing:2px;color:var(--faint);text-transform:uppercase">Philip Ahlqwist</span></div>`;
+}
+
+document.getElementById("btn-download").addEventListener("click", () => {
+  if(!currentResult)return;
+  const r=currentResult, wn=r.overall_winner==="A"?r.entity_a:r.overall_winner==="B"?r.entity_b:"TIE", ln=r.overall_winner==="A"?r.entity_b:r.overall_winner==="B"?r.entity_a:null;
+  const ds=new Date(r.date).toLocaleDateString("sv-SE");
+  const b2r=Object.entries(r.b2_battles).map(([k,v])=>`    ${(DIM_LABELS[k]||k).padEnd(26)} ${String(v.a_score).padStart(2)} vs ${v.b_score}   ${(v.winner==="A"?r.entity_a:v.winner==="B"?r.entity_b:"TIE").padEnd(18)} ${v.insight}`).join("\n");
+  const b1r=Object.entries(r.b1_battles).map(([k,v])=>`    ${(DIM_LABELS[k]||k).padEnd(26)} ${String(v.a_score).padStart(2)} vs ${v.b_score}   ${(v.winner==="A"?r.entity_a:v.winner==="B"?r.entity_b:"TIE").padEnd(18)} ${v.insight}`).join("\n");
+  const txt=`PHILIP AHLQWIST · TWO BRAINS BATTLE REPORT\n${"═".repeat(60)}\n${r.entity_a.toUpperCase()} vs ${r.entity_b.toUpperCase()}\nCategory: ${r.category}   |   Date: ${ds}\n${"─".repeat(60)}\n\nCONTEXT\n${r.context}\n\n${"═".repeat(60)}\nSCOREBOARD\n${"─".repeat(60)}\n  ${r.entity_a.padEnd(20)} Brain 2: ${r.a_b2_total}/35   Brain 1: ${r.a_b1_total}/25   Total: ${r.a_b2_total+r.a_b1_total}/60\n  ${r.entity_b.padEnd(20)} Brain 2: ${r.b_b2_total}/35   Brain 1: ${r.b_b1_total}/25   Total: ${r.b_b2_total+r.b_b1_total}/60\n\n  Margin: ${r.margin}\n  ★ WINNER: ${wn.toUpperCase()}\n\n${"═".repeat(60)}\nVERDICT\n${"─".repeat(60)}\n"${r.verdict.headline}"\n\n${r.verdict.analysis}\n\nDecisive dimension: ${r.knockout_dimension}\n\n${"═".repeat(60)}\nBRAIN 2\n${"─".repeat(60)}\n${b2r}\n\n${"═".repeat(60)}\nBRAIN 1\n${"─".repeat(60)}\n${b1r}\n\n${"═".repeat(60)}\n${ln?`PATH FORWARD FOR ${ln.toUpperCase()}\n${"─".repeat(60)}\n${r.verdict.loser_path_forward}\n\n`:""}WILDCARD\n${"─".repeat(60)}\n${r.wildcard}\n\n${"═".repeat(60)}\nPhilip Ahlqwist · Two Brains Framework\n${"═".repeat(60)}\n`;
+  const url=URL.createObjectURL(new Blob([txt],{type:"text/plain;charset=utf-8"}));
+  const a=document.createElement("a"); a.href=url; a.download=`TwoBrains_${r.entity_a.replace(/\s+/g,"_")}_vs_${r.entity_b.replace(/\s+/g,"_")}_${ds}.txt`; a.click(); URL.revokeObjectURL(url);
+});
+
+// ════════════════════════════════════
+// BRAIN 2 SCORE
+// ════════════════════════════════════
+let lang = 'en';
+let scores = {};
+const b2Dims = ['b2_1','b2_2','b2_3','b2_4','b2_5','b2_6','b2_7'];
+const b1Dims = ['b1_1','b1_2','b1_3','b1_4','b1_5'];
+
+const scoreLabels = {
+  en: {
+    b2_1:'Narrative Clarity',b2_2:'Category Position',b2_3:'Talent Pull',b2_4:'Pricing Power',b2_5:'Cultural Presence',b2_6:'Partner Gravity',b2_7:'Language Adoption',
+    b1_1:'Product Strength',b1_2:'Operational Efficiency',b1_3:'Distribution Reach',b1_4:'Financial Resilience',b1_5:'Pricing Structure',
+    verdicts:{
+      invisible:{title:'Invisible.',desc:'High execution risk. Your company competes primarily on price and distribution. The structural condition that makes a company the obvious choice in its category has not been built.'},
+      replicable:{title:'Replicable.',desc:'Operationally sound, strategically exposed. This is where most portfolios sit — solid on Brain 1, underdeveloped on Brain 2. A better operator could replicate it, and a better-positioned competitor could displace it.'},
+      emerging:{title:'Emerging Gravity.',desc:'Early signs of narrative pull are forming. You have begun to build something competitors cannot easily copy. The foundations are there — but the conditions for inevitability are not yet fully established.'},
+      inevitable:{title:'Inevitable Trajectory.',desc:'Disproportionate advantage forming. Your company is building the structural conditions that make it the obvious choice in its category. Talent, capital and distribution are beginning to move toward you without proportional effort.'}
+    },
+    matrixNotes:{tl:'Strong meaning, weaker operations. You have the narrative — now you need the infrastructure to scale it.',tr:'This is the destination. Both brains working. The company that defines its category and executes at the highest level.',bl:'Neither brain is dominant. The most urgent position — both meaning and operations need investment.',br:'Strong operations, weak meaning. You are building efficiently toward a position a better-positioned competitor can displace.'}
+  },
+  sv: {
+    b2_1:'Narrativ klarhet',b2_2:'Kategoriposition',b2_3:'Talangattraktionskraft',b2_4:'Prissättningskraft',b2_5:'Kulturell närvaro',b2_6:'Partnergravitation',b2_7:'Språkadoption',
+    b1_1:'Produktstyrka',b1_2:'Operationell effektivitet',b1_3:'Distributionsräckvidd',b1_4:'Finansiell motståndskraft',b1_5:'Prisstruktur',
+    verdicts:{
+      invisible:{title:'Osynlig.',desc:'Hög exekveringsrisk. Ditt bolag konkurrerar primärt på pris och distribution. Det strukturella tillståndet som gör ett bolag till det självklara valet i sin kategori har inte byggts.'},
+      replicable:{title:'Replikerbar.',desc:'Operationellt solid, strategiskt exponerad. Det är här de flesta portföljer befinner sig — stark på Brain 1, underutvecklad på Brain 2.'},
+      emerging:{title:'Framväxande gravitation.',desc:'Tidiga tecken på narrativt drag formas. Du har börjat bygga något som konkurrenter inte lätt kan kopiera.'},
+      inevitable:{title:'Oundviklig bana.',desc:'Oproportionerlig fördel formas. Ditt bolag bygger de strukturella villkor som gör det till det självklara valet i sin kategori.'}
+    },
+    matrixNotes:{tl:'Stark mening, svagare drift. Du har narrativet — nu behöver du infrastrukturen för att skala det.',tr:'Det här är destinationen. Båda hjärnorna arbetar.',bl:'Ingen hjärna dominerar. Den mest akuta positionen.',br:'Stark drift, svag mening. Du bygger effektivt mot en position som en bättre positionerad konkurrent kan tränga ut.'}
+  }
+};
+
+function setLang(l) {
+  lang = l;
+  document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+  document.querySelector(`.lang-btn[onclick="setLang('${l}')"]`).classList.add('active');
+  document.querySelectorAll('[data-en]').forEach(el => { el.textContent = el.getAttribute(`data-${l}`) || el.getAttribute('data-en'); });
+}
+
+function startQuiz() {
+  document.getElementById('hero-section').style.display = 'none';
+  document.getElementById('quiz-section').classList.add('active');
+  document.getElementById('submit-section-s').style.display = 'block';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function selectScore(btn, dim, val) {
+  document.querySelectorAll(`.scale-btns[data-dim="${dim}"] .scale-btn`).forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  scores[dim] = val;
+  updateSProgress();
+}
+
+function updateSProgress() {
+  const total = b2Dims.length + b1Dims.length;
+  const answered = Object.keys(scores).length;
+  document.getElementById('progress-fill-s').style.width = (answered/total*100) + '%';
+  document.getElementById('progress-text-s').textContent = `${answered} / ${total}`;
+}
+
+function checkAndShowGate() {
+  const missing = [...b2Dims,...b1Dims].filter(d => !scores[d]);
+  const errEl = document.getElementById('error-msg-s');
+  if (missing.length > 0) {
+    errEl.classList.add('active');
+    errEl.textContent = errEl.getAttribute(`data-${lang}`);
+    const first = document.querySelector(`[data-dim="${missing[0]}"]`);
+    if (first) first.scrollIntoView({behavior:'smooth',block:'center'});
+    return;
+  }
+  errEl.classList.remove('active');
+  document.getElementById('quiz-section').classList.remove('active');
+  document.querySelector('.submit-section').classList.remove('active');
+  document.getElementById('email-gate').classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function submitEmail() {
+  const email = document.getElementById('email-input').value.trim();
+  if (!email || !email.includes('@')) { document.getElementById('email-input').style.borderColor='#a04040'; return; }
+  document.getElementById('email-gate').classList.remove('active');
+  showScoreResults();
+}
+
+function showScoreResults() {
+  const b2Total = b2Dims.reduce((s,d) => s+(scores[d]||0), 0);
+  const b1Total = b1Dims.reduce((s,d) => s+(scores[d]||0), 0);
+  document.getElementById('result-b2-display').textContent = b2Total;
+  document.getElementById('result-b1-display').textContent = b1Total;
+  const v = scoreLabels[lang].verdicts;
+  let verdict, matrixActive;
+  if (b2Total<=14) { verdict=v.invisible; matrixActive='bl'; }
+  else if (b2Total<=24) { verdict=v.replicable; matrixActive='br'; }
+  else if (b2Total<=30) { verdict=v.emerging; matrixActive='tl'; }
+  else { verdict=v.inevitable; matrixActive='tr'; }
+  if (b1Total>=18&&b2Total<=24) matrixActive='br';
+  if (b1Total<13&&b2Total<=14) matrixActive='bl';
+  document.getElementById('result-verdict-s').textContent = verdict.title;
+  document.getElementById('result-desc-s').textContent = verdict.desc;
+  ['tl','tr','bl','br'].forEach(q => document.getElementById(`mq-${q}`).classList.remove('active'));
+  document.getElementById(`mq-${matrixActive}`).classList.add('active');
+  document.getElementById('matrix-note').textContent = scoreLabels[lang].matrixNotes[matrixActive];
+
+  const b2Break = document.getElementById('b2-breakdown');
+  b2Break.innerHTML = '';
+  b2Dims.forEach(d => {
+    const score=scores[d]||0, name=scoreLabels[lang][d];
+    b2Break.innerHTML += `<div class="s-dim-row"><span class="s-dim-name">${name}</span><div class="s-dim-bar-track"><div class="s-dim-bar-fill" style="width:${(score/5)*100}%"></div></div><span class="s-dim-score">${score}/5</span></div>`;
+  });
+  const b1Break = document.getElementById('b1-breakdown');
+  b1Break.innerHTML = '';
+  b1Dims.forEach(d => {
+    const score=scores[d]||0, name=scoreLabels[lang][d];
+    b1Break.innerHTML += `<div class="s-dim-row"><span class="s-dim-name">${name}</span><div class="s-dim-bar-track"><div class="s-dim-bar-fill b1" style="width:${(score/5)*100}%"></div></div><span class="s-dim-score">${score}/5</span></div>`;
+  });
+
+  document.getElementById('results-section').classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+</script>
+</body>
+</html>
