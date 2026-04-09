@@ -285,13 +285,13 @@ p em { font-style: italic; color: var(--ink); }
 /* ── MATRIX EMBED ── */
 .matrix-embed { width:100%; margin:48px 0; }
 .matrix-embed .header { margin-bottom:32px; }
-.matrix-wrap { position:relative; padding:0 0 36px 0; display:flex; flex-direction:row; align-items:stretch; }
+.matrix-wrap { position:relative; padding:0 0 36px 0; display:flex; flex-direction:row; align-items:stretch; overflow:hidden; }
 .axis-y-label-inline { font-family:'DM Mono',monospace; font-size:10px; letter-spacing:0.28em; color:var(--faint); text-transform:uppercase; white-space:nowrap; writing-mode:vertical-rl; transform:rotate(180deg); align-self:center; margin-right:16px; flex-shrink:0; }
 .axis-x-arrow { position:absolute; bottom:24px; left:0; right:0; height:1px; background:var(--rule); }
 .axis-x-arrow::after { content:''; position:absolute; right:-1px; top:-4px; border-top:4px solid transparent; border-bottom:4px solid transparent; border-left:7px solid var(--rule); }
 .axis-x-label { position:absolute; bottom:0; left:0; right:0; text-align:center; font-family:'DM Mono',monospace; font-size:10px; letter-spacing:0.28em; color:var(--faint); text-transform:uppercase; }
-.matrix-grid { display:grid; grid-template-columns:280px 280px; grid-template-rows:280px 280px; gap:3px; background:var(--rule); border:1px solid var(--rule); width:fit-content; }
-.q { padding:28px; position:relative; width:280px; height:280px; display:flex; flex-direction:column; justify-content:space-between; }
+.matrix-grid { display:grid; grid-template-columns:1fr 1fr; grid-template-rows:auto auto; gap:3px; background:var(--rule); border:1px solid var(--rule); width:100%; }
+.q { padding:20px; position:relative; display:flex; flex-direction:column; justify-content:space-between; min-height:200px; }
 .q-tl,.q-tr,.q-bl,.q-br { background:var(--deep); }
 .q-number { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:0.25em; margin-bottom:20px; display:block; color:var(--faint); }
 .q-name { font-size:clamp(20px,2.8vw,28px); font-weight:700; line-height:1.1; letter-spacing:-0.01em; margin-bottom:12px; color:var(--ink); }
@@ -592,7 +592,9 @@ p em { font-style: italic; color: var(--ink); }
   .proof-list li { grid-template-columns:1fr; gap:4px; }
   .three-way { grid-template-columns:1fr; }
   .matrix-grid { grid-template-columns:1fr 1fr; }
-  .q { width:auto; height:auto; min-height:160px; }
+  .q { width:auto; height:auto; min-height:140px; padding:14px; }
+  .matrix-wrap { padding:0 0 28px 0; }
+  .axis-y-label-inline { display:none; }
   #api-banner { padding-left:24px; padding-right:24px; }
   .vs-grid { grid-template-columns:1fr; gap:20px; }
   .vs-center { display:none; }
@@ -918,12 +920,9 @@ p em { font-style: italic; color: var(--ink); }
     <h2 class="memo-title">Two Brains<br>Battle Mode</h2>
   </div>
 
-  <div id="api-banner">
-    <label for="api-key-input">API Key</label>
-    <input id="api-key-input" type="password" placeholder="sk-ant-..." spellcheck="false" autocomplete="off">
-    <button id="api-key-save">Save</button>
-    <span id="api-key-status"></span>
-    <span style="margin-left:auto; font-family:'DM Mono',monospace; font-size:9px; color:var(--faint); cursor:pointer;" id="nav-history-btn">Past Battles (<span id="history-count">0</span>) →</span>
+  <div id="api-banner" style="padding:14px 72px; background:var(--deep); border-bottom:1px solid var(--rule); display:flex; justify-content:space-between; align-items:center;">
+    <span style="font-family:'DM Mono',monospace; font-size:9px; letter-spacing:2px; color:var(--faint); text-transform:uppercase;">Two Brains Battle Engine</span>
+    <span style="font-family:'DM Mono',monospace; font-size:9px; color:var(--faint); cursor:pointer;" id="nav-history-btn">Past Battles (<span id="history-count">0</span>) →</span>
   </div>
 
   <!-- HOME VIEW -->
@@ -1234,22 +1233,14 @@ Be opinionated. Be direct. Don't hedge. Write like someone who has seen 200 orga
 RESPOND ONLY WITH VALID JSON — no markdown, no preamble:
 {"entity_a":"Name","entity_b":"Name","category":"one word","context":"2 sentence framing","data_confidence":"full","b2_battles":{"narrative_clarity":{"a_score":4,"b_score":3,"winner":"A","insight":"One sharp sentence"},"category_position":{"a_score":3,"b_score":4,"winner":"B","insight":"..."},"talent_pull":{"a_score":3,"b_score":4,"winner":"B","insight":"..."},"perceived_pricing_power":{"a_score":4,"b_score":3,"winner":"A","insight":"..."},"cultural_presence":{"a_score":3,"b_score":4,"winner":"B","insight":"..."},"partner_gravity":{"a_score":3,"b_score":3,"winner":"TIE","insight":"..."},"language_adoption":{"a_score":4,"b_score":2,"winner":"A","insight":"..."}},"b1_battles":{"product_strength":{"a_score":4,"b_score":3,"winner":"A","insight":"..."},"operational_efficiency":{"a_score":3,"b_score":4,"winner":"B","insight":"..."},"distribution_reach":{"a_score":4,"b_score":4,"winner":"TIE","insight":"..."},"financial_resilience":{"a_score":4,"b_score":3,"winner":"A","insight":"..."},"pricing_structure":{"a_score":3,"b_score":3,"winner":"TIE","insight":"..."}},"a_b2_total":24,"b_b2_total":23,"a_b1_total":18,"b_b1_total":17,"a_wins":5,"b_wins":4,"ties":3,"overall_winner":"A","margin":"Narrow","knockout_dimension":"The single dimension that most explains why the winner wins","verdict":{"winner_name":"Entity A","loser_name":"Entity B","headline":"Sharp, opinionated one-liner verdict","analysis":"3–4 sentences. What does the winner do structurally that the loser cannot easily replicate?","loser_path_forward":"2 sentences. The ONE thing they would need to change first."},"wildcard":"One surprising or counterintuitive observation that most analysts would miss"}`;
 
-let apiKey = localStorage.getItem("tb_api_key") || "";
+// API key handled server-side
 let currentMode = "deep";
 let currentA = "", currentB = "";
 let currentResult = null;
 let bHistory = JSON.parse(localStorage.getItem("tb_history") || "[]");
 let progressInterval = null;
 
-const apiKeyInput = document.getElementById("api-key-input");
-const apiKeyStatus = document.getElementById("api-key-status");
-if (apiKey) { apiKeyInput.value = apiKey; apiKeyStatus.textContent = "✓ Saved"; }
-document.getElementById("api-key-save").addEventListener("click", () => {
-  apiKey = apiKeyInput.value.trim();
-  localStorage.setItem("tb_api_key", apiKey);
-  apiKeyStatus.textContent = "✓ Saved";
-  setTimeout(() => apiKeyStatus.textContent = "", 2000);
-});
+// API key managed server-side via proxy
 
 function showBView(id) {
   document.querySelectorAll(".bv").forEach(v => v.classList.remove("active"));
@@ -1310,7 +1301,6 @@ function renderBHistory() {
 async function startBattle() {
   currentA = inputA.value.trim(); currentB = inputB.value.trim();
   if (!currentA || !currentB) return;
-  if (!apiKey) { alert("Klistra in din Anthropic API-nyckel i fältet högst upp."); return; }
   showBView("fighting");
   document.getElementById("fight-a-name").textContent = currentA;
   document.getElementById("fight-b-name").textContent = currentB;
@@ -1323,10 +1313,24 @@ async function startBattle() {
   progressInterval = setInterval(() => { setProgress(Math.round(Math.min(((Date.now()-startTime)/30000)*90,90))); }, 200);
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), 45000);
+  // Daily limit check
+  const today = new Date().toDateString();
+  const usageKey = "tb_usage_" + today;
+  const dailyUsage = parseInt(localStorage.getItem(usageKey) || "0");
+  const DAILY_LIMIT = 50;
+
+  if (dailyUsage >= DAILY_LIMIT) {
+    clearInterval(progressInterval);
+    document.getElementById("fight-loading").style.display = "none";
+    document.getElementById("fight-error").style.display = "block";
+    document.getElementById("error-msg-text").textContent = "Many people are using Battle Mode right now. Please come back later.";
+    return;
+  }
+
   try {
-    const response = await fetch("https://api.anthropic.com/v1/messages", {
+    const response = await fetch("/api/battle", {
       method:"POST", signal:controller.signal,
-      headers:{"Content-Type":"application/json","x-api-key":apiKey,"anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true"},
+      headers:{"Content-Type":"application/json"},
       body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:4000,system:BATTLE_SYSTEM,messages:[{role:"user",content:`Head-to-head Two Brains battle: ${currentA} vs ${currentB}. Score all 12 dimensions and return valid JSON only.`}]})
     });
     clearInterval(progressInterval); clearTimeout(timeoutId); setProgress(93); setStatus("Parsing...");
@@ -1340,6 +1344,8 @@ async function startBattle() {
     let parsed; try { parsed = JSON.parse(rawMatch[0]); } catch(e) { throw new Error("JSON parse error: "+e.message); }
     if (!parsed.entity_a||!parsed.b2_battles||!parsed.b1_battles||!parsed.verdict) throw new Error("Incomplete response.");
     parsed.date = new Date().toISOString(); parsed.mode = currentMode;
+    // Increment daily usage
+    localStorage.setItem(usageKey, dailyUsage + 1);
     setProgress(100); currentResult = parsed; saveHistory(parsed);
     setTimeout(() => { renderResult(parsed); showBView("result"); }, 400);
   } catch(err) {

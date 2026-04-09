@@ -1,0 +1,7 @@
+{
+  "functions": {
+    "api/battle.js": {
+      "maxDuration": 60
+    }
+  }
+}
