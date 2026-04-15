@@ -198,9 +198,9 @@ p em { font-style: italic; color: var(--ink); }
   gap: 16px;
   margin: 44px 0 32px;
 }
-.sec-num  { font-family:'DM Mono',monospace; font-size:10px; letter-spacing:3px; color:var(--faint); flex-shrink:0; }
-.sec-rule { flex:1; height:1px; background:var(--rule); }
-.sec-label{ font-family:'DM Mono',monospace; font-size:10px; letter-spacing:3px; text-transform:uppercase; color:var(--faint); flex-shrink:0; }
+.sec-num  { font-family:'DM Mono',monospace; font-size:10px; letter-spacing:3px; color:var(--mid); flex-shrink:0; }
+.sec-rule { flex:1; height:1px; background:var(--mid); opacity:0.3; }
+.sec-label{ font-family:'DM Mono',monospace; font-size:10px; letter-spacing:3px; text-transform:uppercase; color:var(--mid); flex-shrink:0; }
 
 /* ── PULL QUOTE ── */
 .pull { border-left:3px solid var(--ink); padding:4px 0 4px 28px; margin:36px 0; }
@@ -286,14 +286,14 @@ p em { font-style: italic; color: var(--ink); }
 /* ── THREE-WAY OFFER ── */
 .three-way { display:grid; grid-template-columns:1fr 1fr 1fr; gap:1px; background:var(--rule); border:1px solid var(--rule); margin:32px 0; }
 .offer-col { background:var(--paper); padding:24px 20px 28px; }
-.offer-col-tag { font-family:'DM Mono',monospace; font-size:8px; letter-spacing:3px; text-transform:uppercase; color:var(--faint); display:block; margin-bottom:12px; }
+.offer-col-tag { font-family:'DM Mono',monospace; font-size:8px; letter-spacing:3px; text-transform:uppercase; color:var(--mid); display:block; margin-bottom:12px; }
 .offer-col-title { font-size:15px; font-weight:700; color:var(--ink); margin-bottom:10px; line-height:1.25; }
 .offer-col p { font-size:13px; line-height:1.7; color:var(--mid); margin-bottom:0; }
 
 /* ── MATRIX EMBED ── */
 .matrix-embed { width:100%; margin:48px 0; }
 .matrix-embed .header { margin-bottom:32px; }
-.matrix-wrap { position:relative; padding:0 0 36px 0; display:flex; flex-direction:row; align-items:stretch; overflow:hidden; }
+.matrix-wrap { position:relative; display:flex; flex-direction:row; align-items:stretch; overflow:hidden; }
 .axis-y-label-inline { font-family:'DM Mono',monospace; font-size:10px; letter-spacing:0.28em; color:var(--faint); text-transform:uppercase; white-space:nowrap; writing-mode:vertical-rl; transform:rotate(180deg); align-self:center; margin-right:16px; flex-shrink:0; }
 .axis-x-arrow { position:absolute; bottom:24px; left:0; right:0; height:1px; background:var(--rule); }
 .axis-x-arrow::after { content:''; position:absolute; right:-1px; top:-4px; border-top:4px solid transparent; border-bottom:4px solid transparent; border-left:7px solid var(--rule); }
@@ -309,7 +309,7 @@ p em { font-style: italic; color: var(--ink); }
 .q-tag { font-family:'DM Mono',monospace; font-size:10px; letter-spacing:0.18em; text-transform:uppercase; display:inline-block; padding:5px 10px; border:1px solid; }
 .q-tl .q-tag,.q-tr .q-tag { color:var(--mid); border-color:var(--rule); }
 .q-bl .q-tag,.q-br .q-tag { color:var(--faint); border-color:var(--rule); }
-.q-tr::before { content:'★'; position:absolute; bottom:32px; right:32px; font-size:13.65px; color:var(--faint); }
+.q-tr::before { content:''; }
 .footer-axiom { font-size:clamp(13px,1.6vw,16px); font-style:italic; color:var(--ink); line-height:1.55; max-width:560px; }
 .footer-axiom strong { font-style:normal; font-weight:700; }
 
@@ -721,7 +721,7 @@ p em { font-style: italic; color: var(--ink); }
     </div>
 
     <p>Most organisations are built entirely around Brain 1. The dashboards measure it. The boards review it. The incentives reward it. Brain 2 is acknowledged in strategy decks and underfunded in every budget cycle.</p>
-    <p>These two brains have been tilting away from each other for decades. That gap is where value disappears. Across technology, consumer goods, finance and software, the companies that define the meaning of their category capture outsized value within it.</p>
+    <p>These two brains have been tilting away from each other for decades. That gap is where value disappears. Across technology, consumer goods, finance and software, the companies that define the meaning of their category pull ahead of everyone else in it.</p>
     <div class="pull"><p class="pull-text">Investors think they are funding companies. In reality, they are funding future narratives.</p></div>
 
     <p>Brain 1 determines whether the company can execute that narrative. <strong>Brain 2 determines whether anyone will believe it.</strong></p>
@@ -737,12 +737,10 @@ p em { font-style: italic; color: var(--ink); }
           <div class="sec-rule"></div>
         </div>
         <p style="font-family:'Libre Baskerville',Georgia,serif; font-size:clamp(20px,2.8vw,28px); font-weight:700; line-height:1.1; letter-spacing:-0.01em; color:var(--ink); margin:16px 0 0;">Where does your company sit?</p>
-        <p style="margin-top:10px; font-family:'DM Mono',monospace; font-size:11px; color:var(--faint); letter-spacing:0.04em;">Brain 1 builds the product.&nbsp;&nbsp; Brain 2 decides which company becomes the reference point.</p>
+        <p style="margin-top:10px; font-family:'DM Mono',monospace; font-size:11px; color:var(--faint); letter-spacing:0.04em;">Brain 1 builds the product (Operational Excellence · X-axis).&nbsp;&nbsp; Brain 2 decides which company becomes the reference point (Meaning Intelligence · Y-axis).</p>
       </div>
       <div class="matrix-wrap">
-        <div class="axis-y-label-inline">Emotional Excellence &nbsp;·&nbsp; Brain 2</div>
-        <div class="axis-x-arrow"></div>
-        <div class="axis-x-label">Operational excellence &nbsp;·&nbsp; Brain 1</div>
+
         <div class="matrix-grid">
           <div class="q q-tl">
             <div><span class="q-number">01 &nbsp;—&nbsp; HIGH MEANING / LOW OPERATIONS</span><div class="q-name">Compelling<br>but fragile.</div><p class="q-body">Culturally ahead. Structurally at risk. Defines the conversation, but can't always scale it.</p></div>
@@ -750,7 +748,7 @@ p em { font-style: italic; color: var(--ink); }
           </div>
           <div class="q q-tr">
             <div><span class="q-number">02 &nbsp;—&nbsp; HIGH MEANING / HIGH OPERATIONS</span><div class="q-name">The inevitable<br>company.</div><p class="q-body">Excellent and believed in. Defines the category. Attracts capital, talent and loyalty without asking.</p></div>
-            <span class="q-tag">The destination</span>
+            <span class="q-tag">The destination &nbsp;<span style="font-size:20px; line-height:1;">★</span></span>
           </div>
           <div class="q q-bl">
             <div><span class="q-number">03 &nbsp;—&nbsp; LOW MEANING / LOW OPERATIONS</span><div class="q-name">The forgettable<br>company.</div><p class="q-body">Neither excellent nor believed in. Competes on price. Exists until something more interesting arrives.</p></div>
@@ -771,14 +769,11 @@ p em { font-style: italic; color: var(--ink); }
     <div class="sec"><span class="sec-num">§ 2</span><div class="sec-rule"></div><span class="sec-label">The Signal</span></div>
 
     <p>Most companies measure success by what they push out. Sales numbers. Awareness metrics. Share of voice. These are Brain 1 metrics: useful, visible, quarterly.</p>
-    <p>But there is a different signal. One that cannot be bought, gamed or manufactured. It arrives unannounced.</p>
+    <p>But there is a different signal. One that can't be bought, forced or faked. It arrives unannounced. The moment a company becomes inevitable is not when it scales distribution. It's when distribution starts seeking the company.</p>
     <p><strong>You don't push distribution. Distribution starts pulling you.</strong></p>
-    <p><em>The moment a company becomes inevitable is not when it scales distribution. It's when distribution starts seeking the company.</em></p>
     <p>Brands reach out to collaborate. Retailers known for curating the future of a category want the product on their shelves. Cultural actors, journalists, athletes, investors start referencing the company without being asked. The best talent applies before there's a vacancy.</p>
 
-    <div class="pull"><p class="pull-text">Gravity is the only growth signal that cannot be bought, forced or faked.</p></div>
-
-    <p>Maurten never reached out to Nike for a partnership. Nike came to them and ultimately made Maurten only the second brand ever permitted to sell inside Nike's flagship stores. The first was Apple.</p>
+    <p>Like when a small Swedish biotech startup has Nike knocking on their door. That's the signal. The company was Maurten. They never reached out to Nike for a partnership — Nike came to them, and ultimately made Maurten only the second brand ever permitted to sell inside Nike's flagship stores. The first was Apple.</p>
     <p><em>That is not distribution. That is orbit.</em></p>
     <p>Brain 1 can create a better product, a better price, better distribution. <strong>Brain 2 creates something else entirely: Gravity.</strong> The force that pulls talent, capital, culture and distribution toward a company, without proportional effort.</p>
 
@@ -827,7 +822,7 @@ p em { font-style: italic; color: var(--ink); }
     <div class="cases">
       <div class="case">
         <div class="case-co"><span class="case-co-name">Lovable</span><span class="case-co-tag">AI · Sweden · 2024</span></div>
-        <div class="case-body">Sometimes Brain 2 moves faster than any product decision ever could. A Swedish AI startup operating as GPT Engineer rebranded as Lovable. The product did not change. The codebase did not change. One word changed. GPT Engineer described what the company did. <strong>Lovable communicated why it mattered</strong> — shifting the centre of gravity from engineering to human connection, from code to meaning. The impact was immediate: awareness, word of mouth, investor interest and talent attraction all moved without a product change. One positioning decision changed the company's perceived TAM, accessible talent pool, and investor surface area overnight. This is Brain 2 at its most efficient.</div>
+        <div class="case-body">Sometimes Brain 2 moves faster than any product decision ever could. A Swedish AI startup called GPT Engineer changed its name to Lovable. The product did not change. The codebase did not change. One word changed. GPT Engineer described what the company did. <strong>Lovable communicated why it mattered</strong> — shifting the centre of gravity from engineering to human connection, from code to meaning. The impact was immediate: awareness, word of mouth, investor interest and talent attraction all moved without a product change. One positioning decision changed the company's perceived TAM, accessible talent pool, and investor surface area overnight. This is Brain 2 at its most efficient.</div>
       </div>
       <div class="case">
         <div class="case-co"><span class="case-co-name">Maurten</span><span class="case-co-tag">Sport nutrition · 50M → 3.5B SEK · Equity Partner</span></div>
@@ -897,16 +892,16 @@ p em { font-style: italic; color: var(--ink); }
       </div>
     </div>
 
-    <div class="sec"><span class="sec-num">§ 4b</span><div class="sec-rule"></div><span class="sec-label">Where the sequence has produced results</span></div>
+    <div class="sec"><span class="sec-num">§ 4b</span><div class="sec-rule"></div><span class="sec-label">The track record</span></div>
 
     <ul class="proof-list">
       <li>
         <div class="co">Maurten<span class="role-badge">Equity Partner</span></div>
-        <div>Early investor and equity partner from the start. Built the brand architecture, identity and communications platform as an equity holder. The positioning decision that made elite athletes choose Maurten over contracted sponsors was not a campaign. It was structural. <strong>50 MSEK to 3.5 BSEK.</strong> Nike: "So good. Genius. Inspiring." One of two brands ever permitted inside Nike stores. The second was Apple. The lesson: when the narrative is precise enough, the market comes to you.</div>
+        <div>Early investor and equity partner from the start. Built the brand architecture, identity and communications platform as an equity holder. The positioning decision that made elite athletes choose Maurten over contracted sponsors was not a campaign. It was structural. <strong>50 MSEK to 3.5 BSEK.</strong> Nike: <em>"So good. Genius. Inspiring. Thank you for contributing to the category in such a meaningful way."</em> One of two brands ever permitted inside Nike stores. The second was Apple. The lesson: when the narrative is precise enough, the market comes to you.</div>
       </li>
       <li>
         <div class="co">Volontaire<span class="role-badge">Co-Founder</span></div>
-        <div>Co-built from zero. The positioning — "Curators of Sweden" — turned a nation into a brand property and an agency into a category of one. <strong>Cannes Lions Grand Prix.</strong> Among the world's top independent creative agencies 2011–2015. The name, the position and the cultural authority were built simultaneously, from scratch, with no external capital. Brain 2 was the entire business model.</div>
+        <div>Co-built from zero. The positioning launched with "Curators of Sweden" — turned a whole nation into a brand property and an agency into a category of one. <strong>Cannes Lions Grand Prix.</strong> Among the world's top independent creative agencies 2011–2015. The name, the position and the cultural authority were built simultaneously, from scratch, with no external capital. Brain 2 was the entire business model.</div>
       </li>
       <li>
         <div class="co">Sprintcrowd<span class="role-badge">CMO · CD</span></div>
@@ -914,7 +909,7 @@ p em { font-style: italic; color: var(--ink); }
       </li>
       <li>
         <div class="co">Enat<span class="role-badge">Co-Founder</span></div>
-        <div><strong>0 to 25 MSEK.</strong> Impact brand grown from zero with a narrative designed to work equally for consumers and investors, two audiences with fundamentally different criteria for belief. Soho House, V Social Club. The brand did not follow the commercial traction. It created it. In impact categories especially, narrative is often the only fundraising instrument that works across both audiences simultaneously.</div>
+        <div><strong>0 to 25 MSEK.</strong> Impact brand grown from zero with a narrative designed to work equally for consumers and investors, two audiences with fundamentally different criteria for belief. Soho House, V Social Club, Foodora Market. The brand did not follow the commercial traction. It created it. In impact categories especially, narrative is often the only fundraising instrument that works across both audiences simultaneously.</div>
       </li>
       <li>
         <div class="co">Marcel Paris<span class="role-badge">Co-Builder</span></div>
@@ -935,7 +930,7 @@ p em { font-style: italic; color: var(--ink); }
 
     <p>You find great companies. I turn them into institutions: the kind that talent wants to join, investors lean toward before the pitch begins and customers instinctively trust.</p>
 
-    <p>Not as a consultant, not as an agency, but as an embedded partner aligned through equity and outcome. The only measure of success that matters: does this company become harder to compete with, more attractive to capital and more valuable at exit?</p>
+    <p>Not as a consultant, not as an agency, but as an embedded partner aligned through equity and outcome. <strong>The only measure of success that matters: does this company become harder to compete with, more attractive to capital and more valuable at exit?</strong></p>
 
     <div class="pull">
       <p class="pull-text">The question I ask before every engagement is simple: would I be comfortable if my compensation depended entirely on whether this company becomes harder to compete with? If the answer is yes, we have a deal.</p>
@@ -952,7 +947,7 @@ p em { font-style: italic; color: var(--ink); }
       </li>
       <li>
         <div class="co">Strategic Partnership</div>
-        <div>I come in as an embedded partner for six to eighteen months, building Brain 2 as a structural asset from the inside. Aligned through equity and outcome.</div>
+        <div>I come in as an embedded partner for six to eighteen months, building Brain 2 as a structural asset from the inside. Aligned through equity and outcome. A monthly retainer is available for engagements where equity isn't the right structure.</div>
       </li>
       <li>
         <div class="co">Portfolio Diagnostic</div>
@@ -1151,9 +1146,8 @@ p em { font-style: italic; color: var(--ink); }
       <p>Twelve dimensions.</p>
       <p>• <strong style="color:var(--paper);">Brain 1</strong> measures 5 operational fundamentals: the things every investor already tracks.</p>
       <p>• <strong style="color:var(--paper);">Brain 2</strong> measures 7 gravitational signals: the things that determine whether the market seeks you out or needs to be convinced.</p>
-      <p>Each dimension is scored 1–5. Not by algorithm, but by honest reflection.</p>
       <p>The value isn't in the number, it's in the forced clarity of having to take a position on each one.</p>
-      <p>The result places the company in one of four quadrants. That's the starting point for everything that follows.</p>
+      <p>The result places the company in one of four quadrants: Fragile, Forgettable, Replicable or Inevitable. That's the starting point for everything that follows.</p>
     </div>
   </div>
 </div>
