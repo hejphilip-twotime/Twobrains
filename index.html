@@ -1686,5 +1686,30 @@ function showScoreResults() {
   window.scrollTo({top:0,behavior:'smooth'});
 }
 </script>
+<!-- ═══════════════════════════════════════
+     EASTER EGG
+═══════════════════════════════════════ -->
+<div id="easter-egg" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.85); z-index:9999; align-items:center; justify-content:center; flex-direction:column; cursor:pointer;" onclick="document.getElementById('easter-egg').style.display='none'">
+  <img src="TwoBrains-2.png" style="max-width:90vw; max-height:80vh; object-fit:contain;">
+  <div style="font-family:'DM Mono',monospace; font-size:11px; letter-spacing:4px; text-transform:uppercase; color:rgba(255,255,255,0.4); margin-top:24px;">Achievement unlocked &nbsp;·&nbsp; click to close</div>
+</div>
+
+<script>
+(function() {
+  const seq = ['ArrowUp','ArrowUp','ArrowDown','ArrowDown','ArrowLeft','ArrowRight','ArrowLeft','ArrowRight','b','a'];
+  let idx = 0;
+  document.addEventListener('keydown', function(e) {
+    if (e.key === seq[idx]) {
+      idx++;
+      if (idx === seq.length) {
+        document.getElementById('easter-egg').style.display = 'flex';
+        idx = 0;
+      }
+    } else {
+      idx = e.key === seq[0] ? 1 : 0;
+    }
+  });
+})();
+</script>
 </body>
 </html>
