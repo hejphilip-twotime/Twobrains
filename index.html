@@ -216,7 +216,7 @@ p em { font-style: italic; color: var(--ink); }
 .brain-title { font-size:clamp(16px,2vw,20px); font-weight:700; letter-spacing:-0.3px; margin-bottom:20px; line-height:1.2; color:var(--ink); }
 .brain-items { list-style:none; display:flex; flex-direction:column; gap:0; }
 .brain-items li { font-family:'DM Mono',monospace; font-size:11px; letter-spacing:0.5px; line-height:1.5; padding:8px 0; border-bottom:1px solid rgba(0,0,0,0.07); display:flex; align-items:center; gap:10px; color:var(--mid); }
-.brain-items li::before { content:'—'; font-size:9px; flex-shrink:0; color:var(--faint); }
+.brain-items li::before { content:'·'; font-size:14px; flex-shrink:0; color:var(--faint); }
 .brain-items li:last-child { border-bottom:none; }
 .brain-vs { display:flex; align-items:center; justify-content:center; padding-top:80px; }
 .brain-vs-inner { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:3px; color:var(--faint); writing-mode:vertical-rl; text-orientation:mixed; }
@@ -306,9 +306,9 @@ p em { font-style: italic; color: var(--ink); }
 .q-bl .q-name,.q-br .q-name { color:var(--mid); }
 .q-body { font-size:clamp(12px,1.4vw,14px); line-height:1.6; font-style:italic; margin-bottom:20px; color:var(--mid); }
 .q-br .q-body { color:var(--faint); }
-.q-tag { font-family:'DM Mono',monospace; font-size:10px; letter-spacing:0.18em; text-transform:uppercase; display:inline-block; padding:5px 10px; border:1px solid; }
-.q-tl .q-tag,.q-tr .q-tag { color:var(--mid); border-color:var(--rule); }
-.q-bl .q-tag,.q-br .q-tag { color:var(--faint); border-color:var(--rule); }
+.q-tag { font-family:'DM Mono',monospace; font-size:10px; letter-spacing:0.18em; text-transform:uppercase; display:inline-block; padding:5px 0; }
+.q-tl .q-tag,.q-tr .q-tag { color:var(--mid); }
+.q-bl .q-tag,.q-br .q-tag { color:var(--mid); }
 .q-tr::before { content:''; }
 .footer-axiom { font-size:clamp(13px,1.6vw,16px); font-style:italic; color:var(--ink); line-height:1.55; max-width:560px; }
 .footer-axiom strong { font-style:normal; font-weight:700; }
@@ -661,21 +661,23 @@ p em { font-style: italic; color: var(--ink); }
   <div class="memo-header">
     <div class="memo-meta">
       <span class="memo-label">TO:</span>
-      <span>Anyone who has watched a worse company beat a better one and couldn't explain it</span>
-      <span class="memo-label">FROM:</span>
-      <span>The person who can</span>
-      <span class="memo-label">RE:</span>
-      <span>The most expensive blind spot in modern capital allocation</span>
+      <span>Anyone who has watched a worse company beat a better one</span>
     </div>
-    <h1 class="memo-title">Markets don't reward the best company.<br>They reward the one that feels inevitable.<br>That&rsquo;s what I build.</h1>
+    <h1 class="memo-title">Markets don't reward the best company.<br>They reward the one that feels inevitable.</h1>
+  </div>
+
+  <div class="body" style="background:var(--deep); border:1px solid var(--rule); border-top:2px solid var(--ink); padding-top:36px; padding-bottom:36px; margin-bottom: 0;">
+    <div class="sec" style="margin-top:0;"><span class="sec-num"></span><div class="sec-rule"></div><span class="sec-label">Two Brains in 60 sec</span></div>
+    <p style="line-height:1.9; color:var(--mid);">Every serious investor has seen it: a company with an inferior product beats the better one, not once but consistently across categories and decades. There is a structural explanation for it and most capital frameworks have no model for it.</p>
+    <p style="line-height:1.9; color:var(--mid); margin-top:16px;">Every high-performing company runs on two kinds of intelligence. Brain 1 optimises: product, price, distribution, process. Brain 2 creates preference: narrative, belief, category definition. The company that owns its category doesn't just retain customers, it redefines what the category is measured against.</p>
+    <p style="line-height:1.9; color:var(--mid); margin-top:16px;">Brain 1 advantages decay. A better product can be built, a lower price can be matched and AI is making that faster. Brain 1 is becoming a baseline, not a moat. Brain 2 compounds. Belief, once earned, is extraordinarily hard to dislodge and it shows up in lower CAC, higher exit multiples and a company that gets harder to compete with every year it goes uncontested.</p>
+    <p style="line-height:1.9; color:var(--mid); margin-top:16px;">McKinsey's Global Private Markets Report 2026 is unambiguous: "Alpha is less likely to emerge from market dynamics alone. It will increasingly be made." Brain 2 is how it gets made.</p>
   </div>
 
   <div class="body">
-    <p class="lede">Every serious investor has seen it, a company with inferior product and weaker distribution beats the better one, not once but across categories. That is not bad luck, it's a structural phenomenon most capital frameworks have no model for.</p>
-    <p>The company that won did not win on fundamentals, it made itself the obvious conclusion.</p>
-    <p>The mechanism isn't mysterious and it isn't soft. Better positioning lowers your CAC. According to The B2B Institute and Bain, 81% of buyers already know which brand they prefer before the procurement process begins, which means if you're not in their head before the pitch you're not even in the game. Higher talent density builds over time. <strong>All of it accumulates in the exit multiple.</strong> That's not brand strategy, that's capital allocation.</p>
-    <p><strong>That condition has a name: Inevitability.</strong> It's not a marketing outcome, it's a capital allocation outcome, one that compounds faster than product, distributes itself cheaper than advertising and becomes harder to compete with every year it's left uncontested.</p>
-    <p>Most portfolios are not built for it. Not for lack of ambition. Building inevitability requires a fundamentally different kind of intelligence than the one most organisations are structured around.</p>
+    <p><strong>In every category studied across sectors and decades, one company eventually becomes the reference point. The question is never which company has the best product. It's which company the market cannot imagine replacing.</strong></p>
+    <p>The mechanism isn't mysterious and it isn't soft. Better positioning lowers your CAC. According to The B2B Institute and Bain, 81% of buyers already know which brand they prefer before the procurement process begins, which means if you're not in their head before the pitch you're not even in the game. Higher talent density builds over time. <strong>All of it accumulates in the exit multiple.</strong> That's not brand strategy, that's capital allocation. One that compounds faster than product, distributes itself cheaper than advertising and becomes harder to compete with every year it's left uncontested.</p>
+    <p>Most portfolios are not built for it. Not for lack of ambition. Building this requires a fundamentally different kind of intelligence than the one most organisations are structured around.</p>
 
     <div class="sec"><span class="sec-num">§ 1</span><div class="sec-rule"></div><span class="sec-label">The Framework</span></div>
 
@@ -696,7 +698,7 @@ p em { font-style: italic; color: var(--ink); }
       <div class="brain-vs"><span class="brain-vs-inner">versus</span></div>
       <div class="brain brain-2">
         <p class="brain-label">Brain 2 — Meaning Intelligence</p>
-        <p class="brain-title">Makes inevitable.</p>
+        <p class="brain-title">Makes it the obvious choice.</p>
         <ul class="brain-items">
           <li>Narrative &amp; category definition</li>
           <li>Cultural signal &amp; identity</li>
@@ -708,6 +710,7 @@ p em { font-style: italic; color: var(--ink); }
     </div>
 
     <p><strong>Brain 1 is about performance. Brain 2 is about preference before performance matters.</strong> And Brain 1 advantages decay. A better product can be built, a more efficient process can be copied, a lower price can be matched. The edge that took a decade to build can now be replicated in months and AI is making that faster. Brain 1 is becoming a baseline, not a moat.</p>
+    <p>This is not brand strategy. Brand strategy is a deliverable. Brain 2 is a structural condition. One that either exists in the company or it doesn't. One that either compounds or decays.</p>
     <div class="pull">
       <p class="pull-text">"If you demand that the only activity a business can undertake is one for which it has a pre-existing ROI, you can't do anything. All you can do is do what you did last time but cheaper. Business becomes overly focused on cost cutting and the efficient performance of current activities, and completely under-focused on exploration and discovery."</p>
       <p class="pull-attr">Rory Sutherland, Vice Chairman, Ogilvy</p>
@@ -769,15 +772,8 @@ p em { font-style: italic; color: var(--ink); }
     <div class="sec"><span class="sec-num">§ 2</span><div class="sec-rule"></div><span class="sec-label">The Signal</span></div>
 
     <p>Most companies measure success by what they push out. Sales numbers. Awareness metrics. Share of voice. These are Brain 1 metrics: useful, visible, quarterly.</p>
-    <p>But there is a different signal. One that can't be bought, forced or faked. It arrives unannounced. The moment a company becomes inevitable is not when it scales distribution. It's when distribution starts seeking the company.</p>
-    <p><strong>You don't push distribution. Distribution starts pulling you.</strong></p>
-    <p>Brands reach out to collaborate. Retailers known for curating the future of a category want the product on their shelves. Cultural actors, journalists, athletes, investors start referencing the company without being asked. The best talent applies before there's a vacancy.</p>
-
+    <p>But there is a different signal. One that can't be bought, forced or faked. It arrives unannounced.</p>
     <p>Like when a small Swedish biotech startup has Nike knocking on their door. That's the signal. The company was Maurten. They never reached out to Nike for a partnership — Nike came to them, and ultimately made Maurten only the second brand ever permitted to sell inside Nike's flagship stores. The first was Apple.</p>
-    <p><em>That is not distribution. That is orbit.</em></p>
-    <p>Brain 1 can create a better product, a better price, better distribution. <strong>Brain 2 creates something else entirely: Gravity.</strong> The force that pulls talent, capital, culture and distribution toward a company, without proportional effort.</p>
-
-    <div class="pull"><p class="pull-text">Meaning creates Gravity. Gravity creates Inevitability. And inevitability is the only truly durable competitive advantage.</p></div>
   </div>
   <div class="page-foot"><span class="page-num">01 — 05</span><span class="page-name"></span></div>
 </div>
@@ -837,8 +833,7 @@ p em { font-style: italic; color: var(--ink); }
     </div>
 
     <div class="highlight">
-      <p>In every category, one company eventually becomes the reference point. Brain 1 builds the product. Brain 2 decides which company that will be.</p>
-      <p><strong>Most portfolios are not missing performance. They are missing inevitability.</strong></p>
+      <p><strong>Most portfolios are not missing performance. They are missing the signal.</strong></p>
     </div>
   </div>
   <div class="page-foot"><span class="page-num">02 — 05</span><span class="page-name"></span></div>
@@ -879,7 +874,7 @@ p em { font-style: italic; color: var(--ink); }
       <div class="seq-row">
         <span class="seq-num">03</span>
         <div class="seq-connector"><div class="seq-dot"></div><div class="seq-line"></div></div>
-        <div class="seq-content"><p class="seq-title">Belief</p><p class="seq-body">Turn brand from communication into a multiplier on capital, sales and talent attraction. This is where identity, gravity and dealflow begin to reinforce each other. The company starts to feel inevitable before it actually is — and that perception, once formed, is extraordinarily hard for a competitor to dislodge.</p></div>
+        <div class="seq-content"><p class="seq-title">Belief</p><p class="seq-body">Turn brand from communication into a multiplier on capital, sales and talent attraction. This is where identity, gravity and dealflow begin to reinforce each other. The company starts to feel like the obvious choice before it actually is — and that perception, once formed, is extraordinarily hard for a competitor to dislodge.</p></div>
       </div>
       <div class="seq-row">
         <span class="seq-num">04</span>
@@ -948,7 +943,7 @@ p em { font-style: italic; color: var(--ink); }
       </li>
       <li>
         <div class="co">Strategic Partnership</div>
-        <div>I come in as an embedded partner for six to eighteen months, building Brain 2 as a structural asset from the inside. Aligned through equity and outcome. A monthly retainer is available for engagements where equity isn't the right structure.</div>
+        <div>I come in as an embedded partner for six to eighteen months, building Brain 2 as a structural asset from the inside. Aligned through equity and outcome. A monthly retainer is available for engagements where equity isn't the right structure. Positioning, narrative architecture, category definition, investor story, talent brief. Built in sequence, tested against the market, owned entirely by the company when the engagement ends.</div>
       </li>
       <li>
         <div class="co">Portfolio Diagnostic</div>
@@ -971,7 +966,7 @@ p em { font-style: italic; color: var(--ink); }
       </div>
       <div class="offer-col">
         <span class="offer-col-tag">Founders</span>
-        <p class="offer-col-title">You have the product. Now make it inevitable.</p>
+        <p class="offer-col-title">You have the product. Now make it the obvious choice.</p>
         <p>Direction, position, belief. Applied in sequence, with an operator who has done it before and has capital on the line. Not advice. Execution with equity alignment.</p>
       </div>
     </div>
@@ -1131,7 +1126,7 @@ p em { font-style: italic; color: var(--ink); }
       <span class="memo-label">FROM:</span>
       <span data-en="Philip Ahlqwist — Brand Strategist & Co-founder" data-sv="Philip Ahlqwist — Varumärkesstrateg & Equity Partner">Philip Ahlqwist — Brand Strategist & Co-founder</span>
       <span class="memo-label">RE:</span>
-      <span data-en="A diagnostic for companies that want to become inevitable" data-sv="En genomlysning för bolag som vill bli oundvikliga">A diagnostic for companies that want to become inevitable</span>
+      <span data-en="A diagnostic for companies ready to become the reference point" data-sv="En genomlysning för bolag som vill bli oundvikliga">A diagnostic for companies ready to become the reference point</span>
     </div>
     <h2 class="memo-title" data-en="Where does your company sit, and where should it?" data-sv="Var sitter ditt bolag, och var borde det sitta?">Where does your company sit, and where should it?</h2>
   </div>
