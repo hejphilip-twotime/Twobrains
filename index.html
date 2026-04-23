@@ -1391,13 +1391,8 @@ function handleMonitorSignup(e) {
   document.getElementById('monitor-confirm').style.display = 'block';
 }
 
-// Pre-fill with a random pair on load
-(function() {
-  const pick = SURPRISE_BATTLES[Math.floor(Math.random() * SURPRISE_BATTLES.length)];
-  inputA.value = pick[0];
-  inputB.value = pick[1];
-  updateStartBtn();
-})();
+// Inputs start empty
+updateStartBtn();
 inputB.addEventListener("keydown", e => e.key === "Enter" && startBattle());
 
 document.getElementById("btn-surprise").addEventListener("click", () => {
