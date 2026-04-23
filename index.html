@@ -1297,9 +1297,17 @@ const SURPRISE_BATTLES = [
   ["Nike","Adidas"],["Supreme","Palace"],["IKEA","H&M"],["Rolex","Patek Philippe"],
   ["Gucci","Louis Vuitton"],["Arsenal","Chelsea"],["Real Madrid","Barcelona"],
   ["Liverpool","Manchester United"],["Hammarby","Djurgården"],["Zlatan","Messi"],
-  ["Tesla","BMW"],["Ferrari","Lamborghini"],["Volvo","Saab"],["ABBA","Roxette"],
-  ["Klarna","Zettle"],["Dogs","Cats"],["Mac","PC"],["Louis Vuitton","Hermès"],
-  ["Churchill","Roosevelt"],["Thatcher","Blair"],["Viking","Roman"],
+  ["Tesla","BMW"],["Ferrari","Lamborghini"],["ABBA","Roxette"],
+  ["Dogs","Cats"],["Mac","PC"],["Louis Vuitton","Hermès"],["Romans","Vikings"],
+  ["Sex Pistols","The Ramones"],
+  ["Gymshark","Lululemon"],["Oatly","Minor Figures"],["Patagonia","The North Face"],
+  ["Liquid Death","Monster"],["Duolingo","Babbel"],["Airbnb","Booking.com"],
+  ["Revolut","Klarna"],["Fever-Tree","Schweppes"],["Hims & Hers","Ro"],
+  ["Blockbuster","Netflix"],["Nokia","Apple"],["MySpace","Facebook"],["Kodak","Instagram"],
+  ["Xbox","PlayStation"],["Blur","Oasis"],["Marvel","DC"],
+  ["Star Trek","Star Wars"],["Town","Country"],["Coffee","Tea"],
+  ["Rolls-Royce","Bentley"],["Kanye","Jay-Z"],["Oxford","Cambridge"],
+  ["Broadway","West End"],["YSL","Dior"],
 ];
 
 const DIM_LABELS = {
@@ -1559,7 +1567,7 @@ document.getElementById("btn-download").addEventListener("click", () => {
   const ds=new Date(r.date).toLocaleDateString("sv-SE");
   const b2r=Object.entries(r.b2_battles).map(([k,v])=>`    ${(DIM_LABELS[k]||k).padEnd(26)} ${String(v.a_score).padStart(2)} vs ${v.b_score}   ${(v.winner==="A"?r.entity_a:v.winner==="B"?r.entity_b:"TIE").padEnd(18)} ${v.insight}`).join("\n");
   const b1r=Object.entries(r.b1_battles).map(([k,v])=>`    ${(DIM_LABELS[k]||k).padEnd(26)} ${String(v.a_score).padStart(2)} vs ${v.b_score}   ${(v.winner==="A"?r.entity_a:v.winner==="B"?r.entity_b:"TIE").padEnd(18)} ${v.insight}`).join("\n");
-  const txt=`PHILIP AHLQWIST · TWO BRAINS BATTLE REPORT\n${"═".repeat(60)}\n${r.entity_a.toUpperCase()} vs ${r.entity_b.toUpperCase()}\nCategory: ${r.category}   |   Date: ${ds}\n${"─".repeat(60)}\n\nCONTEXT\n${r.context}\n\n${"═".repeat(60)}\nSCOREBOARD\n${"─".repeat(60)}\n  ${r.entity_a.padEnd(20)} Brain 2: ${r.a_b2_total}/35   Brain 1: ${r.a_b1_total}/25   Total: ${r.a_b2_total+r.a_b1_total}/60\n  ${r.entity_b.padEnd(20)} Brain 2: ${r.b_b2_total}/35   Brain 1: ${r.b_b1_total}/25   Total: ${r.b_b2_total+r.b_b1_total}/60\n\n  Margin: ${r.margin}\n  ★ WINNER: ${wn.toUpperCase()}\n\n${"═".repeat(60)}\nVERDICT\n${"─".repeat(60)}\n"${r.verdict.headline}"\n\n${r.verdict.analysis}\n\nDecisive dimension: ${r.knockout_dimension}\n\n${"═".repeat(60)}\nBRAIN 2\n${"─".repeat(60)}\n${b2r}\n\n${"═".repeat(60)}\nBRAIN 1\n${"─".repeat(60)}\n${b1r}\n\n${"═".repeat(60)}\n${ln?`PATH FORWARD FOR ${ln.toUpperCase()}\n${"─".repeat(60)}\n${r.verdict.loser_path_forward}\n\n`:""}WILDCARD\n${"─".repeat(60)}\n${r.wildcard}\n\n${"═".repeat(60)}\nPhilip Ahlqwist · Two Brains Framework\n${"═".repeat(60)}\n`;
+  const txt=`PHILIP AHLQWIST · TWO BRAINS BATTLE REPORT\n${"═".repeat(60)}\n${r.entity_a.toUpperCase()} vs ${r.entity_b.toUpperCase()}\nCategory: ${r.category}   |   Date: ${ds}\n${"─".repeat(60)}\n\nCONTEXT\n${r.context}\n\n${"═".repeat(60)}\nSCOREBOARD\n${"─".repeat(60)}\n  ${r.entity_a.padEnd(20)} Brain 2: ${r.a_b2_total}/35   Brain 1: ${r.a_b1_total}/25   Total: ${r.a_b2_total+r.a_b1_total}/60\n  ${r.entity_b.padEnd(20)} Brain 2: ${r.b_b2_total}/35   Brain 1: ${r.b_b1_total}/25   Total: ${r.b_b2_total+r.b_b1_total}/60\n\n  Margin: ${r.margin}\n  ★ WINNER: ${wn.toUpperCase()}\n\n${"═".repeat(60)}\nVERDICT\n${"─".repeat(60)}\n"${r.verdict.headline}"\n\n${r.verdict.analysis}\n\nDecisive dimension: ${r.knockout_dimension}\n\n${"═".repeat(60)}\nBRAIN 2\n${"─".repeat(60)}\n${b2r}\n\n${"═".repeat(60)}\nBRAIN 1\n${"─".repeat(60)}\n${b1r}\n\n${"═".repeat(60)}\n${ln?`PATH FORWARD FOR ${ln.toUpperCase()}\n${"─".repeat(60)}\n${r.verdict.loser_path_forward}\n\n`:""}WILDCARD\n${"─".repeat(60)}\n${r.wildcard}\n\n${"═".repeat(60)}\nPhilip Ahlqwist · Two Brains Framework · ahlqwist.com\n${"═".repeat(60)}\n`;
   const url=URL.createObjectURL(new Blob([txt],{type:"text/plain;charset=utf-8"}));
   const a=document.createElement("a"); a.href=url; a.download=`TwoBrains_${r.entity_a.replace(/\s+/g,"_")}_vs_${r.entity_b.replace(/\s+/g,"_")}_${ds}.txt`; a.click(); URL.revokeObjectURL(url);
 });
