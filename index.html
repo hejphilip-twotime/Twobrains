@@ -89,7 +89,6 @@ body {
 /* ── TAB NAV ── */
 .tab-nav {
   display: flex;
-  border-top: 1px solid var(--rule);
 }
 .tab-btn {
   flex: 1;
@@ -481,8 +480,8 @@ p em { font-style: italic; color: var(--ink); }
    TAB 3 — BRAIN 2 SCORE
 ════════════════════════════════════════ */
 
-.lang-bar { display:flex; gap:0; margin-bottom:3px; max-width:740px; }
-.lang-btn { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:3px; text-transform:uppercase; padding:9px 18px; background:var(--deep); border:1px solid var(--rule); border-right:none; cursor:pointer; color:var(--faint); transition:all 0.2s; }
+.lang-bar { display:flex; gap:0; margin-bottom:0; max-width:740px; background:var(--paper); }
+.lang-btn { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:3px; text-transform:uppercase; padding:9px 18px; background:transparent; border:1px solid var(--rule); border-right:none; cursor:pointer; color:var(--faint); transition:all 0.2s; }
 .lang-btn:last-child { border-right:1px solid var(--rule); }
 .lang-btn.active { background:var(--ink); color:var(--paper); border-color:var(--ink); }
 
@@ -1151,12 +1150,12 @@ p em { font-style: italic; color: var(--ink); }
 <div class="page" style="padding-top:0;">
   <div class="body">
     <div class="ask-box">
-      <p class="ask-box-title" style="color:var(--paper);">How it works</p>
-      <p>Twelve dimensions.</p>
-      <p>• <strong style="color:var(--paper);">Brain 1</strong> measures 5 operational fundamentals: the things every investor already tracks.</p>
-      <p>• <strong style="color:var(--paper);">Brain 2</strong> measures 7 gravitational signals: the things that determine whether the market seeks you out or needs to be convinced.</p>
-      <p>The value isn't in the number, it's in the forced clarity of having to take a position on each one.</p>
-      <p>The result places the company in one of four quadrants: Fragile, Forgettable, Replicable or Inevitable. That's the starting point for everything that follows.</p>
+      <p class="ask-box-title" style="color:var(--paper);" data-en="How it works" data-sv="Så fungerar det">How it works</p>
+      <p data-en="Twelve dimensions." data-sv="Tolv dimensioner.">Twelve dimensions.</p>
+      <p data-en="• Brain 1 measures 5 operational fundamentals: the things every investor already tracks." data-sv="• Brain 1 mäter 5 operativa grunder: de saker som varje investerare redan mäter.">• <strong style="color:var(--paper);">Brain 1</strong> measures 5 operational fundamentals: the things every investor already tracks.</p>
+      <p data-en="• Brain 2 measures 7 gravitational signals: the things that determine whether the market seeks you out or needs to be convinced." data-sv="• Brain 2 mäter 7 gravitationssignaler: de saker som avgör om marknaden söker upp dig eller behöver övertygas.">• <strong style="color:var(--paper);">Brain 2</strong> measures 7 gravitational signals: the things that determine whether the market seeks you out or needs to be convinced.</p>
+      <p data-en="The value isn't in the number, it's in the forced clarity of having to take a position on each one." data-sv="Värdet ligger inte i siffran, det ligger i tydligheten i att behöva ta ställning till var och en.">The value isn't in the number, it's in the forced clarity of having to take a position on each one.</p>
+      <p data-en="The result places the company in one of four quadrants: Fragile, Forgettable, Replicable or Inevitable. That's the starting point for everything that follows." data-sv="Resultatet placerar företaget i en av fyra kvadranter: Skör, Intetsägande, Kopierbar eller Oundviklig. Det är utgångspunkten för allt som följer därefter.">The result places the company in one of four quadrants: Fragile, Forgettable, Replicable or Inevitable. That's the starting point for everything that follows.</p>
     </div>
   </div>
 </div>
@@ -1629,7 +1628,10 @@ function setLang(l) {
   lang = l;
   document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
   document.querySelector(`.lang-btn[onclick="setLang('${l}')"]`).classList.add('active');
-  document.querySelectorAll('[data-en]').forEach(el => { el.textContent = el.getAttribute(`data-${l}`) || el.getAttribute('data-en'); });
+  document.querySelectorAll('[data-en]').forEach(el => {
+    const val = el.getAttribute(`data-${l}`) || el.getAttribute('data-en');
+    el.innerHTML = val;
+  });
 }
 
 function startQuiz() {
