@@ -980,6 +980,16 @@ p em { font-style: italic; color: var(--ink); }
         <a href="mailto:philip@ahlqwist.com" style="color:var(--paper); font-family:'DM Mono',monospace; font-size:10px; letter-spacing:3px; text-transform:uppercase; text-decoration:none; border-bottom:1px solid #4a4540; padding-bottom:2px;">philip@ahlqwist.com</a>
       </p>
     </div>
+
+    <div style="background:var(--deep); border:1px solid var(--rule); padding:36px 44px; margin:3px 0 0;">
+      <div class="sec" style="margin-top:0;"><span class="sec-num"></span><div class="sec-rule"></div><span class="sec-label">Two Brains Monitor</span></div>
+      <p style="font-size:15px; line-height:1.85; color:var(--mid); margin-bottom:20px;">Want to know how your company scores against your closest competitors on all twelve Brain 2 dimensions? Join the waiting list for the monthly Brain 2 Report.</p>
+      <form onsubmit="handleMonitorSignup(event)" style="display:flex; gap:12px; flex-wrap:wrap;">
+        <input type="email" id="monitor-email" placeholder="your@email.com" required style="flex:1; min-width:200px; border:none; border-bottom:1px solid var(--rule); background:transparent; padding:10px 0; font-size:15px; font-family:'Libre Baskerville',serif; color:var(--ink); outline:none;">
+        <button type="submit" style="background:var(--ink); color:var(--paper); border:none; padding:10px 24px; font-family:'DM Mono',monospace; font-size:9px; letter-spacing:3px; text-transform:uppercase; cursor:pointer;">Submit →</button>
+      </form>
+      <div id="monitor-confirm" style="display:none; font-family:'DM Mono',monospace; font-size:9px; letter-spacing:2px; color:var(--faint); margin-top:12px; text-transform:uppercase;">Received. We'll be in touch.</div>
+    </div>
   </div>
   <div class="page-foot"><span class="page-num">04 — 05</span><span class="page-name"></span></div>
 </div>
@@ -1307,7 +1317,7 @@ const SURPRISE_BATTLES = [
   ["Xbox","PlayStation"],["Blur","Oasis"],["Marvel","DC"],
   ["Star Trek","Star Wars"],["Town","Country"],["Coffee","Tea"],
   ["Rolls-Royce","Bentley"],["Kanye","Jay-Z"],["Oxford","Cambridge"],
-  ["Broadway","West End"],["YSL","Dior"],
+  ["Broadway","West End"],["YSL","Dior"],["Pixar","DreamWorks"],
 ];
 
 const DIM_LABELS = {
@@ -1373,6 +1383,21 @@ function updateStartBtn() { btnStart.classList.toggle("ready", !!(inputA.value.t
 inputA.addEventListener("input", updateStartBtn);
 inputB.addEventListener("input", updateStartBtn);
 inputA.addEventListener("keydown", e => e.key === "Enter" && startBattle());
+
+function handleMonitorSignup(e) {
+  e.preventDefault();
+  const email = document.getElementById('monitor-email').value;
+  window.location.href = `mailto:philip@ahlqwist.com?subject=Two Brains Monitor signup&body=Please add me to the Two Brains Monitor: ${email}`;
+  document.getElementById('monitor-confirm').style.display = 'block';
+}
+
+// Pre-fill with a random pair on load
+(function() {
+  const pick = SURPRISE_BATTLES[Math.floor(Math.random() * SURPRISE_BATTLES.length)];
+  inputA.value = pick[0];
+  inputB.value = pick[1];
+  updateStartBtn();
+})();
 inputB.addEventListener("keydown", e => e.key === "Enter" && startBattle());
 
 document.getElementById("btn-surprise").addEventListener("click", () => {
