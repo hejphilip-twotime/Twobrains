@@ -17,14 +17,14 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --paper:  #f7f4ef;
-  --ink:    #1a1814;
-  --mid:    #4a4540;
-  --faint:  #9a9288;
-  --rule:   #d8d2c8;
-  --mark:   #eee8dc;
-  --deep:   #f0ece4;
-  --bg:     #e2ddd6;
+  --paper:  #f6f6f6;
+  --ink:    #141414;
+  --mid:    #2a2a2a;
+  --faint:  #666666;
+  --rule:   #cccccc;
+  --mark:   #ebebeb;
+  --deep:   #eeeeee;
+  --bg:     #dedede;
   --a:      #8a5a38;
   --b:      #2a5a78;
 }
@@ -56,14 +56,13 @@ body {
 .site-header::before {
   content: '';
   position: absolute; inset: 0;
-  background-image: repeating-linear-gradient(0deg, transparent, transparent 27px, rgba(0,0,0,0.016) 27px, rgba(0,0,0,0.016) 28px);
   pointer-events: none;
 }
 .site-header > * { position: relative; }
 
 .header-inner {
   padding: 44px 72px 32px;
-  border-bottom: 2px solid var(--ink);
+  border-bottom: 1px solid var(--rule);
 }
 .header-meta {
   display: grid;
@@ -132,7 +131,7 @@ body {
 .page::before {
   content: '';
   position: absolute; inset: 0;
-  background-image: repeating-linear-gradient(0deg, transparent, transparent 27px, rgba(0,0,0,0.016) 27px, rgba(0,0,0,0.016) 28px);
+  
   pointer-events: none; z-index: 0;
 }
 .page > * { position: relative; z-index: 1; }
@@ -148,7 +147,7 @@ body {
 .page-name { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:3px; text-transform:uppercase; color:var(--faint); }
 
 /* ── MEMO HEADER ── */
-.memo-header { padding: 52px 72px 28px; border-bottom: 2px solid var(--ink); }
+.memo-header { padding: 52px 72px 28px; border-bottom: 1px solid var(--rule); }
 .memo-meta {
   display: grid;
   grid-template-columns: 44px 1fr;
@@ -491,7 +490,7 @@ p em { font-style: italic; color: var(--ink); }
 .quiz-wrap.active { display:block; }
 
 .section-card { background:var(--paper); margin-bottom:3px; position:relative; overflow:hidden; }
-.section-card::before { content:''; position:absolute; inset:0; background-image:repeating-linear-gradient(0deg,transparent,transparent 27px,rgba(0,0,0,0.016) 27px,rgba(0,0,0,0.016) 28px); pointer-events:none; }
+.section-card::before { content:''; position:absolute; inset:0;  pointer-events:none; }
 .section-header { padding:32px 72px 24px; border-bottom:1px solid var(--rule); position:relative; }
 .section-tag { font-family:'DM Mono',monospace; font-size:8px; letter-spacing:4px; text-transform:uppercase; color:var(--faint); margin-bottom:8px; display:block; }
 .section-title { font-size:22px; font-weight:700; color:var(--ink); letter-spacing:-0.3px; }
@@ -517,7 +516,7 @@ p em { font-style: italic; color: var(--ink); }
 .s-progress-text { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:2px; color:var(--faint); flex-shrink:0; }
 
 .email-gate { background:var(--paper); padding:52px 72px; margin-bottom:3px; position:relative; overflow:hidden; display:none; }
-.email-gate::before { content:''; position:absolute; inset:0; background-image:repeating-linear-gradient(0deg,transparent,transparent 27px,rgba(0,0,0,0.016) 27px,rgba(0,0,0,0.016) 28px); pointer-events:none; }
+.email-gate::before { content:''; position:absolute; inset:0;  pointer-events:none; }
 .email-gate.active { display:block; }
 .gate-title { font-size:clamp(22px,3vw,30px); font-weight:700; color:var(--ink); line-height:1.2; margin-bottom:16px; letter-spacing:-0.3px; }
 .gate-sub { font-size:15px; color:var(--mid); line-height:1.8; margin-bottom:32px; font-style:italic; }
@@ -544,7 +543,7 @@ p em { font-style: italic; color: var(--ink); }
 .result-desc { font-size:15px; line-height:1.85; color:#9a9288; max-width:520px; }
 
 .results-breakdown { background:var(--paper); padding:48px 72px; margin-bottom:3px; position:relative; overflow:hidden; }
-.results-breakdown::before { content:''; position:absolute; inset:0; background-image:repeating-linear-gradient(0deg,transparent,transparent 27px,rgba(0,0,0,0.016) 27px,rgba(0,0,0,0.016) 28px); pointer-events:none; }
+.results-breakdown::before { content:''; position:absolute; inset:0;  pointer-events:none; }
 .breakdown-title { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:4px; text-transform:uppercase; color:var(--faint); margin-bottom:28px; display:flex; align-items:center; gap:16px; }
 .breakdown-title::after { content:''; flex:1; height:1px; background:var(--rule); }
 .s-dim-row { display:grid; grid-template-columns:160px 1fr 32px; gap:0 16px; align-items:center; padding:12px 0; border-bottom:1px solid var(--rule); position:relative; }
@@ -556,7 +555,7 @@ p em { font-style: italic; color: var(--ink); }
 .s-dim-score { font-family:'DM Mono',monospace; font-size:12px; color:var(--ink); text-align:right; }
 
 .matrix-result { background:var(--paper); padding:48px 72px; margin-bottom:3px; position:relative; overflow:hidden; }
-.matrix-result::before { content:''; position:absolute; inset:0; background-image:repeating-linear-gradient(0deg,transparent,transparent 27px,rgba(0,0,0,0.016) 27px,rgba(0,0,0,0.016) 28px); pointer-events:none; }
+.matrix-result::before { content:''; position:absolute; inset:0;  pointer-events:none; }
 .mini-matrix { display:grid; grid-template-columns:1fr 1fr; grid-template-rows:1fr 1fr; gap:3px; background:var(--rule); border:1px solid var(--rule); max-width:480px; margin:24px 0; }
 .mini-q { background:var(--deep); padding:20px 22px; position:relative; }
 .mini-q.active { background:var(--ink); }
@@ -668,7 +667,7 @@ p em { font-style: italic; color: var(--ink); }
     <h1 class="memo-title">Markets don't reward the best company.<br>They reward the one that feels inevitable.</h1>
   </div>
 
-  <div class="body" style="background:var(--deep); border:1px solid var(--rule); border-top:2px solid var(--ink); padding-top:36px; padding-bottom:36px; margin-bottom: 0;">
+  <div class="body" style="background:var(--deep); border:1px solid var(--rule); padding-top:36px; padding-bottom:36px; margin-bottom: 0;">
     <div class="sec" style="margin-top:0;"><span class="sec-num"></span><div class="sec-rule"></div><span class="sec-label">Two Brains in 60 sec</span></div>
     <p style="line-height:1.9; color:var(--mid);">Every serious investor has seen it: a company with an inferior product beats the better one, not once but consistently across categories and decades. There is a structural explanation for it and most capital frameworks have no model for it.</p>
     <p style="line-height:1.9; color:var(--mid); margin-top:16px;">Every high-performing company runs on two kinds of intelligence. Brain 1 optimises: product, price, distribution, process. Brain 2 creates preference: narrative, belief, category definition. The company that owns its category doesn't just retain customers, it redefines what the category is measured against.</p>
@@ -835,9 +834,7 @@ p em { font-style: italic; color: var(--ink); }
       </div>
     </div>
 
-    <div class="highlight">
-      <p><strong>Most portfolios are not missing performance. They are missing the signal.</strong></p>
-    </div>
+    <div class="pull"><p class="pull-text">Most portfolios are not missing performance,<br>they are missing the signal.</p></div>
   </div>
   <div class="page-foot"><span class="page-num">02 — 05</span><span class="page-name"></span></div>
 </div>
