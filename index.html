@@ -206,7 +206,7 @@ p em { font-style: italic; color: var(--ink); }
 .pull-attr { font-family:'DM Mono',monospace; font-size:9.5px; letter-spacing:2px; text-transform:uppercase; color:var(--faint); margin-top:10px; }
 
 /* ── FRAMEWORK BOX ── */
-.framework { margin:40px 0 48px; display:grid; grid-template-columns:1fr 48px 1fr; gap:0; align-items:start; }
+.framework { margin:40px 0 48px; display:grid; grid-template-columns:1fr 48px 1fr; gap:0; align-items:stretch; }
 .brain { padding:28px 28px 32px; }
 .brain-1 { background:var(--deep); border:1px solid var(--rule); border-right:none; }
 .brain-2 { background:var(--deep); border:1px solid var(--rule); border-left:none; }
@@ -645,6 +645,9 @@ p em { font-style: italic; color: var(--ink); }
     </button>
     <button class="tab-btn" onclick="switchTab('battle')">
       <span class="tab-num">03</span>Battle Mode
+    </button>
+    <button class="tab-btn" onclick="switchTab('about')">
+      <span class="tab-num">04</span>About
     </button>
   </nav>
 </div>
@@ -1265,6 +1268,30 @@ p em { font-style: italic; color: var(--ink); }
 </div><!-- end tab-score -->
 
 
+<!-- ═══════════════════════════════════════
+     TAB 4 — ABOUT
+═══════════════════════════════════════ -->
+<div id="tab-about" class="section-wrap">
+  <div class="page">
+    <div class="body">
+      <img src="Philip_Ahlqwist_VHK.png" alt="Philip Ahlqwist" style="width:100%; margin-bottom:40px; display:block;">
+
+      <div class="sec" style="margin-top:0;"><span class="sec-num">§ 1</span><div class="sec-rule"></div><span class="sec-label">The Person</span></div>
+
+      <p style="font-size:16px; line-height:1.9; color:var(--mid);">Philip Ahlqwist is a brand strategist and equity partner with 20 years of experience on both sides of the table, building agencies from scratch and embedding inside companies as an operator with skin in the game. He co-built Marcel Paris and co-founded Volontaire, two agencies that put genuine dents in the category, the latter for which he won the Cannes Lions Grand Prix and more than 100 international awards. He was an early equity partner in Maurten and has founded and held CMO and CD roles across consumer, impact and technology companies.</p>
+
+      <div class="sec"><span class="sec-num">§ 2</span><div class="sec-rule"></div><span class="sec-label">Contact</span></div>
+
+      <p style="margin-top:8px; display:flex; gap:28px; flex-wrap:wrap;">
+        <a href="https://www.linkedin.com/in/philipahlqwist/" target="_blank" style="font-family:'DM Mono',monospace; font-size:10px; letter-spacing:3px; text-transform:uppercase; text-decoration:none; color:var(--ink); border-bottom:1px solid var(--rule); padding-bottom:2px;">LinkedIn →</a>
+        <a href="mailto:philip@ahlqwist.com" style="font-family:'DM Mono',monospace; font-size:10px; letter-spacing:3px; text-transform:uppercase; text-decoration:none; color:var(--ink); border-bottom:1px solid var(--rule); padding-bottom:2px;">philip@ahlqwist.com</a>
+      </p>
+    </div>
+    <div class="page-foot"><span class="page-num">04</span><span class="page-num">ahlqwist.com</span></div>
+  </div>
+</div><!-- end tab-about -->
+
+
 <!-- SHARE MODAL -->
 <div id="share-modal">
   <div class="share-card-wrap">
@@ -1287,7 +1314,7 @@ function switchTab(id) {
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
   document.getElementById('tab-' + id).classList.add('active');
   const btns = document.querySelectorAll('.tab-btn');
-  const map = {whitepaper:0, score:1, battle:2};
+  const map = {whitepaper:0, score:1, battle:2, about:3};
   btns[map[id]].classList.add('active');
   window.scrollTo({top:0, behavior:'smooth'});
 }
