@@ -296,14 +296,15 @@ p em { font-style: italic; color: var(--ink); }
 .axis-x-arrow { position:absolute; bottom:24px; left:0; right:0; height:1px; background:var(--rule); }
 .axis-x-arrow::after { content:''; position:absolute; right:-1px; top:-4px; border-top:4px solid transparent; border-bottom:4px solid transparent; border-left:7px solid var(--rule); }
 .axis-x-label { position:absolute; bottom:0; left:0; right:0; text-align:center; font-family:'DM Mono',monospace; font-size:10px; letter-spacing:0.28em; color:var(--faint); text-transform:uppercase; }
-.matrix-grid { display:grid; grid-template-columns:1fr 1fr; grid-template-rows:auto auto; gap:3px; background:var(--rule); border:1px solid var(--rule); width:100%; }
+.matrix-grid { display:grid; grid-template-columns:1fr 1fr; grid-template-rows:1fr 1fr; gap:3px; background:var(--rule); border:1px solid var(--rule); width:100%; }
+.q { display:flex; flex-direction:column; justify-content:space-between; }
 .q { padding:20px; position:relative; display:flex; flex-direction:column; justify-content:space-between; min-height:200px; }
 .q-tl,.q-tr,.q-bl,.q-br { background:var(--deep); }
 .q-number { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:0.25em; margin-bottom:20px; display:block; color:var(--faint); }
 .q-name { font-size:clamp(20px,2.8vw,28px); font-weight:700; line-height:1.1; letter-spacing:-0.01em; margin-bottom:12px; color:var(--ink); }
 .q-bl .q-name,.q-br .q-name { color:var(--mid); }
 .q-body { font-size:clamp(12px,1.4vw,14px); line-height:1.6; font-style:italic; margin-bottom:20px; color:var(--mid); }
-.q-br .q-body { color:var(--faint); }
+.q-br .q-body { color:var(--mid); }
 .q-tag { font-family:'DM Mono',monospace; font-size:10px; letter-spacing:0.18em; text-transform:uppercase; display:inline-block; padding:5px 0; }
 .q-tl .q-tag,.q-tr .q-tag { color:var(--mid); }
 .q-bl .q-tag,.q-br .q-tag { color:var(--mid); }
@@ -750,19 +751,19 @@ p em { font-style: italic; color: var(--ink); }
 
         <div class="matrix-grid">
           <div class="q q-tl">
-            <div><span class="q-number">01 &nbsp;—&nbsp; HIGH MEANING / LOW OPERATIONS</span><div class="q-name">Compelling<br>but fragile.</div><p class="q-body">Culturally ahead. Structurally at risk. Defines the conversation but can't always scale it. Brain 2 running without Brain 1 creates valuations that can't survive contact with reality.</p></div>
+            <div><span class="q-number">01 &nbsp;—&nbsp; HIGH MEANING / LOW OPERATIONS</span><div class="q-name">The fragile<br>company.</div><p class="q-body">Culturally ahead. Structurally at risk. Defines the conversation but can't always scale it. Brain 2 running without Brain 1 creates valuations that can't survive contact with reality.</p></div>
             <span class="q-tag">Ahead of the market</span>
           </div>
           <div class="q q-tr">
-            <div><span class="q-number">02 &nbsp;—&nbsp; HIGH MEANING / HIGH OPERATIONS</span><div class="q-name">The inevitable<br>company.</div><p class="q-body">Excellent and believed in. Defines the category. Attracts capital, talent and loyalty without asking.</p></div>
+            <div><span class="q-number">02 &nbsp;—&nbsp; HIGH MEANING / HIGH OPERATIONS</span><div class="q-name">The inevitable<br>company.</div><p class="q-body">Excellent and believed in. Defines the category. Attracts capital, talent and loyalty without asking. Brain 1 and Brain 2 in alignment, the conditions that make a company structurally hard to compete with and impossible to ignore.</p></div>
             <span class="q-tag">The destination &nbsp;<span style="font-size:20px; line-height:1;">★</span></span>
           </div>
           <div class="q q-bl">
-            <div><span class="q-number">03 &nbsp;—&nbsp; LOW MEANING / LOW OPERATIONS</span><div class="q-name">The forgettable<br>company.</div><p class="q-body">Neither excellent nor believed in. Competes on price. Exists until something more interesting arrives.</p></div>
+            <div><span class="q-number">03 &nbsp;—&nbsp; LOW MEANING / LOW OPERATIONS</span><div class="q-name">The forgettable<br>company.</div><p class="q-body">Neither excellent nor believed in. Competes on price. Exists until something more interesting arrives. The most vulnerable position in any category, with no narrative to protect it and no operational edge to fall back on.</p></div>
             <span class="q-tag">At risk</span>
           </div>
           <div class="q q-br">
-            <div><span class="q-number">04 &nbsp;—&nbsp; LOW MEANING / HIGH OPERATIONS</span><div class="q-name">The replicable<br>company.</div><p class="q-body">Operationally sound. Strategically exposed. Efficient until a better operator enters the category.</p></div>
+            <div><span class="q-number">04 &nbsp;—&nbsp; LOW MEANING / HIGH OPERATIONS</span><div class="q-name">The replicable<br>company.</div><p class="q-body">Operationally sound. Strategically exposed. Efficient until a better operator enters the category. Where most portfolios sit, solid on Brain 1 but underdeveloped on Brain 2. A better-positioned competitor can displace it without being operationally superior.</p></div>
             <span class="q-tag">Most portfolios</span>
           </div>
         </div>
@@ -1253,7 +1254,7 @@ p em { font-style: italic; color: var(--ink); }
   <div class="matrix-result">
     <div class="breakdown-title" data-en="Where you sit" data-sv="Var du befinner dig">Where you sit</div>
     <div class="mini-matrix">
-      <div class="mini-q" id="mq-tl"><span class="mini-q-name" data-en="High Meaning / Low Operations" data-sv="Hög Mening / Låg Drift">High Meaning / Low Operations</span><div class="mini-q-title" data-en="Compelling but fragile" data-sv="Övertygande men skör">Compelling but fragile</div></div>
+      <div class="mini-q" id="mq-tl"><span class="mini-q-name" data-en="High Meaning / Low Operations" data-sv="Hög Mening / Låg Drift">High Meaning / Low Operations</span><div class="mini-q-title" data-en="The fragile company" data-sv="Det sköra bolaget">The fragile company</div></div>
       <div class="mini-q" id="mq-tr"><span class="mini-q-name" data-en="High Meaning / High Operations" data-sv="Hög Mening / Hög Drift">High Meaning / High Operations</span><div class="mini-q-title" data-en="The inevitable company" data-sv="Det oundvikliga bolaget">The inevitable company</div></div>
       <div class="mini-q" id="mq-bl"><span class="mini-q-name" data-en="Low Meaning / Low Operations" data-sv="Låg Mening / Låg Drift">Low Meaning / Low Operations</span><div class="mini-q-title" data-en="The forgettable company" data-sv="Det glömbara bolaget">The forgettable company</div></div>
       <div class="mini-q" id="mq-br"><span class="mini-q-name" data-en="Low Meaning / High Operations" data-sv="Låg Mening / Hög Drift">Low Meaning / High Operations</span><div class="mini-q-title" data-en="The replicable company" data-sv="Det replikerbara bolaget">The replicable company</div></div>
