@@ -673,7 +673,7 @@ p em { font-style: italic; color: var(--ink); }
   <div class="body">
     <p><strong>I wasn't looking for a framework.</strong></p>
     <p>I was looking for an answer to a specific kind of anomaly: why did Maurten win? Why did a small local biotech lab in Gothenburg end up with Nike knocking on their door? And why did world-class athletes, contractually bound to global competitors, risk their entire sponsorship deals to use Maurten's products in secret?</p>
-    <p>I'd seen this pattern before, just in different arenas. At Volontaire, we built a category of one agency with zero external capital, won the Cannes Lions Grand Prix and put Sweden on the front cover of the New York Times. At Marcel Paris, we scaled from 12 to 160 people in twenty-four months, not by outspending the market, but by operating on a logic the market didn't yet recognize, winning global business for household brands like Coca-Cola, Pernod Ricard and Orange. I've also watched the opposite: well-funded giants with superior products losing to something they couldn't quite name.</p>
+    <p>I'd seen this pattern before, just in different arenas. At Volontaire, we built a category of one agency with zero external capital, won the Cannes Lions Grand Prix and put Sweden on the front cover of the New York Times. At Marcel Paris, we scaled from 8 to 160 people in twenty-four months, not by outspending the market, but by operating on a logic the market didn't yet recognize, winning global business for household brands like Coca-Cola, Pernod Ricard and Orange. I've also watched the opposite: well-funded giants with superior products losing to something they couldn't quite name.</p>
     <p>After twenty years of sitting inside these decisions with equity on the line, I've realized it isn't about brand or marketing. Both are symptoms, not causes.</p>
     <p>The real differentiator is a second kind of intelligence. A specific organizational logic that either scales or decays. Most companies don't have a model for it. Most leaders can't yet see it.</p>
     <p>This is what I found was missing and this is how it works.</p>
@@ -891,7 +891,7 @@ p em { font-style: italic; color: var(--ink); }
     <ul class="proof-list">
       <li>
         <div class="co">Marcel Paris<span class="role-badge">Co-Builder</span></div>
-        <div>Built alongside Fred Raillard and Farid Mokart from a small creative agency to a global operation. <strong>12 to 160 employees in under 2 years.</strong> The agency's commercial success was built entirely on Brain 2: a strong, distinctive narrative that attracted talent and clients disproportionate to its size. Coca-Cola, Pernod Ricard, Orange.</div>
+        <div>Built alongside Fred Raillard and Farid Mokart from a small creative agency to a global operation. <strong>8 to 160 employees in under 2 years.</strong> The agency's commercial success was built entirely on Brain 2: a strong, distinctive narrative that attracted talent and clients disproportionate to its size. Coca-Cola, Pernod Ricard, Orange.</div>
       </li>
       <li>
         <div class="co">Volontaire<span class="role-badge">Co-Founder</span></div>
@@ -1322,8 +1322,17 @@ function switchTab(id) {
   const btns = document.querySelectorAll('.tab-btn');
   const map = {whitepaper:0, score:1, battle:2, about:3};
   btns[map[id]].classList.add('active');
+  window.location.hash = id;
   window.scrollTo({top:0, behavior:'smooth'});
 }
+
+// Handle deep links on load
+(function() {
+  const hash = window.location.hash.replace('#', '');
+  if (['whitepaper','score','battle','about'].includes(hash)) {
+    switchTab(hash);
+  }
+})();
 
 // ════════════════════════════════════
 // BATTLE MODE
