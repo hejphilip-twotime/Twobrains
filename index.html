@@ -1371,6 +1371,11 @@ const DIM_LABELS = {
   financial_resilience:"Financial Resilience", pricing_structure:"Pricing Structure",
 };
 
+// Model used by Battle Mode. Anthropic retires older model strings roughly once
+// or twice a year, which makes Battle Mode fail with an API error. When that
+// happens, update this one line.
+const BATTLE_MODEL = "claude-sonnet-4-6";
+
 const BATTLE_SYSTEM = `You are Philip Ahlqwist's Two Brains battle engine. You conduct head-to-head strategic analysis of two companies, clubs, brands, or any entities using the Two Brains framework.
 
 THE TWO BRAINS FRAMEWORK:
@@ -1500,7 +1505,7 @@ async function startBattle() {
     const response = await fetch("/api/battle", {
       method:"POST", signal:controller.signal,
       headers:{"Content-Type":"application/json"},
-      body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:4000,system:BATTLE_SYSTEM,messages:[{role:"user",content:`Head-to-head Two Brains battle: ${currentA} vs ${currentB}. Score all 12 dimensions and return valid JSON only.`}]})
+      body:JSON.stringify({model:BATTLE_MODEL,max_tokens:4000,system:BATTLE_SYSTEM,messages:[{role:"user",content:`Head-to-head Two Brains battle: ${currentA} vs ${currentB}. Score all 12 dimensions and return valid JSON only.`}]})
     });
     clearInterval(progressInterval); clearTimeout(timeoutId); setProgress(93); setStatus("Parsing...");
     if (!response.ok) { const e = await response.text(); throw new Error(`API ${response.status}: ${e.slice(0,300)}`); }
