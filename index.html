@@ -1035,11 +1035,6 @@ p em { font-style: italic; color: var(--ink); }
         <div class="vs-center">VS</div>
         <div><label class="vs-label" style="color:var(--b)">Entity B</label><input id="input-b" class="entity-input" placeholder="Contender" autocomplete="off"></div>
       </div>
-      <div class="sec" style="margin-top:36px;"><span class="sec-num">02</span><div class="sec-rule"></div><span class="sec-label">Analysis Depth</span></div>
-      <div class="depth-grid">
-        <div class="depth-opt" data-mode="quick"><div class="opt-label">Quick</div><div class="opt-sub">~15 sec · fast verdict</div></div>
-        <div class="depth-opt active" data-mode="deep"><div class="opt-label">Deep</div><div class="opt-sub">~30 sec · full analysis</div></div>
-      </div>
       <button id="btn-start">Begin Analysis →</button>
       <div class="surprise-wrap">
         <button id="btn-surprise">⚡ Surprise Me</button>
@@ -1067,7 +1062,6 @@ p em { font-style: italic; color: var(--ink); }
           <div class="b-error-title">Error</div>
           <div class="b-error-msg" id="error-msg-text"></div>
           <div class="b-error-btns">
-            <button class="btn-mono" id="btn-retry-quick" style="display:none">Retry as Quick</button>
             <button class="btn-mono" id="btn-retry">Retry</button>
             <button class="btn-mono faint" id="btn-error-back">← Back</button>
           </div>
@@ -1394,11 +1388,22 @@ BRAIN 1 (Operational Intelligence) — score each entity 1–5:
 
 Be opinionated. Be direct. Don't hedge. Write like someone who has seen 200 organisations.
 
+ACCURACY:
+Never invent the name of a person, a founder, an executive or an owner. If you are not certain of a name, refer to the role instead, for example "the founder" or "the parent group". A wrong name destroys the credibility of the whole analysis.
+
+LENGTH:
+Every "insight" is one sentence. "context" is one sentence. "analysis" is three sentences. "loser_path_forward" is two sentences. "wildcard" is one sentence. Do not exceed these.
+
 RESPOND ONLY WITH VALID JSON — no markdown, no preamble:
 {"entity_a":"Name","entity_b":"Name","category":"one word","context":"2 sentence framing","data_confidence":"full","b2_battles":{"narrative_clarity":{"a_score":4,"b_score":3,"winner":"A","insight":"One sharp sentence"},"category_position":{"a_score":3,"b_score":4,"winner":"B","insight":"..."},"talent_pull":{"a_score":3,"b_score":4,"winner":"B","insight":"..."},"perceived_pricing_power":{"a_score":4,"b_score":3,"winner":"A","insight":"..."},"cultural_presence":{"a_score":3,"b_score":4,"winner":"B","insight":"..."},"partner_gravity":{"a_score":3,"b_score":3,"winner":"TIE","insight":"..."},"language_adoption":{"a_score":4,"b_score":2,"winner":"A","insight":"..."}},"b1_battles":{"product_strength":{"a_score":4,"b_score":3,"winner":"A","insight":"..."},"operational_efficiency":{"a_score":3,"b_score":4,"winner":"B","insight":"..."},"distribution_reach":{"a_score":4,"b_score":4,"winner":"TIE","insight":"..."},"financial_resilience":{"a_score":4,"b_score":3,"winner":"A","insight":"..."},"pricing_structure":{"a_score":3,"b_score":3,"winner":"TIE","insight":"..."}},"a_b2_total":24,"b_b2_total":23,"a_b1_total":18,"b_b1_total":17,"a_wins":5,"b_wins":4,"ties":3,"overall_winner":"A","margin":"Narrow","knockout_dimension":"The single dimension that most explains why the winner wins","verdict":{"winner_name":"Entity A","loser_name":"Entity B","headline":"Sharp, opinionated one-liner verdict","analysis":"3–4 sentences. What does the winner do structurally that the loser cannot easily replicate?","loser_path_forward":"2 sentences. The ONE thing they would need to change first."},"wildcard":"One surprising or counterintuitive observation that most analysts would miss"}`;
 
+// One analysis mode only. The hosting platform cuts the request off after a
+// fixed number of seconds, so the length limits in BATTLE_SYSTEM above are what
+// keep a run inside that window. Loosen them and battles start timing out.
+const MAX_TOKENS = 2200;
+
 // API key handled server-side
-let currentMode = "deep";
+let currentMode = "standard";
 let currentA = "", currentB = "";
 let currentResult = null;
 let bHistory = JSON.parse(localStorage.getItem("tb_history") || "[]");
@@ -1505,7 +1510,7 @@ async function startBattle() {
     const response = await fetch("/api/battle", {
       method:"POST", signal:controller.signal,
       headers:{"Content-Type":"application/json"},
-      body:JSON.stringify({model:BATTLE_MODEL,max_tokens:4000,system:BATTLE_SYSTEM,messages:[{role:"user",content:`Head-to-head Two Brains battle: ${currentA} vs ${currentB}. Score all 12 dimensions and return valid JSON only.`}]})
+      body:JSON.stringify({model:BATTLE_MODEL,max_tokens:MAX_TOKENS,system:BATTLE_SYSTEM,messages:[{role:"user",content:`Head-to-head Two Brains battle: ${currentA} vs ${currentB}. Score all 12 dimensions and return valid JSON only.`}]})
     });
     clearInterval(progressInterval); clearTimeout(timeoutId); setProgress(93); setStatus("Parsing...");
     if (!response.ok) { const e = await response.text(); throw new Error(`API ${response.status}: ${e.slice(0,300)}`); }
@@ -1527,14 +1532,12 @@ async function startBattle() {
     document.getElementById("fight-loading").style.display = "none";
     document.getElementById("fight-error").style.display = "block";
     document.getElementById("error-msg-text").textContent = err.name==="AbortError" ? "Timeout. Kontrollera din API-nyckel eller försök igen." : (err.message||"Unknown error");
-    document.getElementById("btn-retry-quick").style.display = currentMode==="deep" ? "inline-block" : "none";
   }
 }
 
 function setProgress(pct) { document.getElementById("progress-fill").style.width=pct+"%"; document.getElementById("fight-pct").textContent=pct+"%"; }
 function setStatus(txt) { document.getElementById("fight-status").textContent=txt; }
 
-document.getElementById("btn-retry-quick").addEventListener("click", () => { currentMode="quick"; document.querySelectorAll(".depth-opt").forEach(o=>o.classList.remove("active")); document.querySelector('[data-mode="quick"]').classList.add("active"); startBattle(); });
 document.getElementById("btn-retry").addEventListener("click", startBattle);
 document.getElementById("btn-error-back").addEventListener("click", () => showBView("home"));
 
