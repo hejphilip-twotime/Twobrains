@@ -1550,15 +1550,30 @@ async function startBattle() {
   }
 }
 
-// One request to the model. Used twice per battle, once per brain.
+// One request to the model, with a single silent retry. Used twice per battle,
+// once per brain. The retry is there because an occasional call still fails for
+// reasons outside this code, and a second attempt almost always succeeds.
 async function callBattle(system, userContent, maxTokens, signal) {
+  try {
+    return await callBattleOnce(system, userContent, maxTokens, signal);
+  } catch (err) {
+    if (err.name === "AbortError") throw err;
+    return await callBattleOnce(system, userContent, maxTokens, signal);
+  }
+}
+
+async function callBattleOnce(system, userContent, maxTokens, signal) {
   const response = await fetch("/api/battle", {
     method:"POST", signal,
     headers:{"Content-Type":"application/json"},
     body:JSON.stringify({model:BATTLE_MODEL,max_tokens:maxTokens,system,messages:[{role:"user",content:userContent}]})
   });
   if (!response.ok) { const e = await response.text(); throw new Error(`API ${response.status}: ${e.slice(0,300)}`); }
-  const data = await response.json();
+  // The proxy sends the body as padded plain text, not JSON, so that the
+  // connection stays open while the model works. Read it as text and parse.
+  const raw = await response.text();
+  let data;
+  try { data = JSON.parse(raw.trim()); } catch(e) { throw new Error("Bad response from server."); }
   if (data.error) throw new Error(data.error.message || "API error");
   const textBlocks = (data.content||[]).filter(b=>b.type==="text").map(b=>b.text);
   if (!textBlocks.length) throw new Error(`No text block. stop_reason=${data.stop_reason}`);
