@@ -1370,7 +1370,7 @@ const DIM_LABELS = {
 // happens, update this one line.
 const BATTLE_MODEL = "claude-sonnet-4-6";
 
-const BATTLE_SYSTEM = `You are Philip Ahlqwist's Two Brains battle engine. You conduct head-to-head strategic analysis of two companies, clubs, brands, or any entities using the Two Brains framework.
+const BATTLE_CORE = `You are Philip Ahlqwist's Two Brains battle engine. You conduct head-to-head strategic analysis of two companies, clubs, brands, or any entities using the Two Brains framework.
 
 THE TWO BRAINS FRAMEWORK:
 Brain 2 = Meaning Intelligence (narrative, belief, gravity, cultural weight)
@@ -1394,13 +1394,32 @@ Never invent the name of a person, a founder, an executive or an owner. If you a
 LENGTH:
 Every "insight" is one sentence. "context" is one sentence. "analysis" is three sentences. "loser_path_forward" is two sentences. "wildcard" is one sentence. Do not exceed these.
 
-RESPOND ONLY WITH VALID JSON — no markdown, no preamble:
-{"entity_a":"Name","entity_b":"Name","category":"one word","context":"2 sentence framing","data_confidence":"full","b2_battles":{"narrative_clarity":{"a_score":4,"b_score":3,"winner":"A","insight":"One sharp sentence"},"category_position":{"a_score":3,"b_score":4,"winner":"B","insight":"..."},"talent_pull":{"a_score":3,"b_score":4,"winner":"B","insight":"..."},"perceived_pricing_power":{"a_score":4,"b_score":3,"winner":"A","insight":"..."},"cultural_presence":{"a_score":3,"b_score":4,"winner":"B","insight":"..."},"partner_gravity":{"a_score":3,"b_score":3,"winner":"TIE","insight":"..."},"language_adoption":{"a_score":4,"b_score":2,"winner":"A","insight":"..."}},"b1_battles":{"product_strength":{"a_score":4,"b_score":3,"winner":"A","insight":"..."},"operational_efficiency":{"a_score":3,"b_score":4,"winner":"B","insight":"..."},"distribution_reach":{"a_score":4,"b_score":4,"winner":"TIE","insight":"..."},"financial_resilience":{"a_score":4,"b_score":3,"winner":"A","insight":"..."},"pricing_structure":{"a_score":3,"b_score":3,"winner":"TIE","insight":"..."}},"a_b2_total":24,"b_b2_total":23,"a_b1_total":18,"b_b1_total":17,"a_wins":5,"b_wins":4,"ties":3,"overall_winner":"A","margin":"Narrow","knockout_dimension":"The single dimension that most explains why the winner wins","verdict":{"winner_name":"Entity A","loser_name":"Entity B","headline":"Sharp, opinionated one-liner verdict","analysis":"3–4 sentences. What does the winner do structurally that the loser cannot easily replicate?","loser_path_forward":"2 sentences. The ONE thing they would need to change first."},"wildcard":"One surprising or counterintuitive observation that most analysts would miss"}`;
+YOUR TASK IN THIS CALL is given below. Answer only that part.`;
 
-// One analysis mode only. The hosting platform cuts the request off after a
-// fixed number of seconds, so the length limits in BATTLE_SYSTEM above are what
-// keep a run inside that window. Loosen them and battles start timing out.
-const MAX_TOKENS = 2200;
+// The analysis is split into two calls, one per brain. A single call that
+// produced all twelve dimensions took longer than the hosting platform allows
+// and was cut off mid-generation. Two shorter calls each finish well inside
+// that window. Do not merge them back into one.
+
+const SYS_B2 = BATTLE_CORE + `
+
+TASK: Score ONLY the seven Brain 2 dimensions. Do not score Brain 1 and do not write a verdict.
+
+RESPOND ONLY WITH VALID JSON — no markdown, no preamble:
+{"entity_a":"Name","entity_b":"Name","category":"one word","context":"One sentence framing","data_confidence":"full","b2_battles":{"narrative_clarity":{"a_score":4,"b_score":3,"winner":"A","insight":"One sharp sentence"},"category_position":{"a_score":3,"b_score":4,"winner":"B","insight":"..."},"talent_pull":{"a_score":3,"b_score":4,"winner":"B","insight":"..."},"perceived_pricing_power":{"a_score":4,"b_score":3,"winner":"A","insight":"..."},"cultural_presence":{"a_score":3,"b_score":4,"winner":"B","insight":"..."},"partner_gravity":{"a_score":3,"b_score":3,"winner":"TIE","insight":"..."},"language_adoption":{"a_score":4,"b_score":2,"winner":"A","insight":"..."}}}`;
+
+const SYS_B1 = BATTLE_CORE + `
+
+TASK: Score ONLY the five Brain 1 dimensions, then write the verdict for the whole battle. The Brain 2 result is given to you in the user message. Do not repeat the Brain 2 scores.
+
+RESPOND ONLY WITH VALID JSON — no markdown, no preamble:
+{"b1_battles":{"product_strength":{"a_score":4,"b_score":3,"winner":"A","insight":"One sharp sentence"},"operational_efficiency":{"a_score":3,"b_score":4,"winner":"B","insight":"..."},"distribution_reach":{"a_score":4,"b_score":4,"winner":"TIE","insight":"..."},"financial_resilience":{"a_score":4,"b_score":3,"winner":"A","insight":"..."},"pricing_structure":{"a_score":3,"b_score":3,"winner":"TIE","insight":"..."}},"knockout_dimension":"The single dimension that most explains why the winner wins","verdict":{"winner_name":"Entity A","loser_name":"Entity B","headline":"Sharp, opinionated one-liner verdict","analysis":"Three sentences. What does the winner do structurally that the loser cannot easily replicate?","loser_path_forward":"Two sentences. The ONE thing they would need to change first."},"wildcard":"One surprising or counterintuitive observation that most analysts would miss"}`;
+
+// One analysis mode only. Each of the two calls gets its own token budget.
+// Keep these modest: the hosting platform cuts a request off after a fixed
+// number of seconds, and longer answers take longer to generate.
+const MAX_TOKENS_B2 = 1500;
+const MAX_TOKENS_B1 = 1400;
 
 // API key handled server-side
 let currentMode = "standard";
@@ -1489,9 +1508,9 @@ async function startBattle() {
   document.getElementById("fight-error").style.display = "none";
   setProgress(0); setStatus("Analysing...");
   const startTime = Date.now();
-  progressInterval = setInterval(() => { setProgress(Math.round(Math.min(((Date.now()-startTime)/30000)*90,90))); }, 200);
+  progressInterval = setInterval(() => { setProgress(Math.round(Math.min(((Date.now()-startTime)/40000)*90,90))); }, 200);
   const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), 45000);
+  const timeoutId = setTimeout(() => controller.abort(), 90000);
   // Daily limit check
   const today = new Date().toDateString();
   const usageKey = "tb_usage_" + today;
@@ -1507,23 +1526,19 @@ async function startBattle() {
   }
 
   try {
-    const response = await fetch("/api/battle", {
-      method:"POST", signal:controller.signal,
-      headers:{"Content-Type":"application/json"},
-      body:JSON.stringify({model:BATTLE_MODEL,max_tokens:MAX_TOKENS,system:BATTLE_SYSTEM,messages:[{role:"user",content:`Head-to-head Two Brains battle: ${currentA} vs ${currentB}. Score all 12 dimensions and return valid JSON only.`}]})
-    });
-    clearInterval(progressInterval); clearTimeout(timeoutId); setProgress(93); setStatus("Parsing...");
-    if (!response.ok) { const e = await response.text(); throw new Error(`API ${response.status}: ${e.slice(0,300)}`); }
-    const data = await response.json();
-    if (data.error) throw new Error(data.error.message || "API error");
-    const textBlocks = (data.content||[]).filter(b=>b.type==="text").map(b=>b.text);
-    if (!textBlocks.length) throw new Error(`No text block. stop_reason=${data.stop_reason}`);
-    const rawMatch = textBlocks.join("\n").match(/\{[\s\S]*\}/);
-    if (!rawMatch) throw new Error("No JSON found in response.");
-    let parsed; try { parsed = JSON.parse(rawMatch[0]); } catch(e) { throw new Error("JSON parse error: "+e.message); }
-    if (!parsed.entity_a||!parsed.b2_battles||!parsed.b1_battles||!parsed.verdict) throw new Error("Incomplete response.");
+    // Call one: Brain 2.
+    setStatus("Brain 2 · Meaning...");
+    const p1 = await callBattle(SYS_B2, `Head-to-head Two Brains battle: ${currentA} vs ${currentB}. Entity A is ${currentA}, entity B is ${currentB}. Score the seven Brain 2 dimensions and return valid JSON only.`, MAX_TOKENS_B2, controller.signal);
+
+    // Call two: Brain 1 plus the verdict, informed by what Brain 2 found.
+    setStatus("Brain 1 · Operations...");
+    const b2Recap = Object.entries(p1.b2_battles || {}).map(([k,v]) => `${k}: A ${v.a_score}, B ${v.b_score}`).join("; ");
+    const p2 = await callBattle(SYS_B1, `Head-to-head Two Brains battle: ${currentA} vs ${currentB}. Entity A is ${currentA}, entity B is ${currentB}.\n\nBrain 2 result: ${b2Recap}\n\nNow score the five Brain 1 dimensions and write the verdict for the whole battle. Return valid JSON only.`, MAX_TOKENS_B1, controller.signal);
+
+    clearInterval(progressInterval); clearTimeout(timeoutId); setProgress(96); setStatus("Parsing...");
+
+    const parsed = mergeBattle(p1, p2);
     parsed.date = new Date().toISOString(); parsed.mode = currentMode;
-    // Increment daily usage
     localStorage.setItem(usageKey, dailyUsage + 1);
     setProgress(100); currentResult = parsed; saveHistory(parsed);
     setTimeout(() => { renderResult(parsed); showBView("result"); }, 400);
@@ -1531,8 +1546,58 @@ async function startBattle() {
     clearInterval(progressInterval); clearTimeout(timeoutId);
     document.getElementById("fight-loading").style.display = "none";
     document.getElementById("fight-error").style.display = "block";
-    document.getElementById("error-msg-text").textContent = err.name==="AbortError" ? "Timeout. Kontrollera din API-nyckel eller försök igen." : (err.message||"Unknown error");
+    document.getElementById("error-msg-text").textContent = err.name==="AbortError" ? "Timeout. Försök igen." : (err.message||"Unknown error");
   }
+}
+
+// One request to the model. Used twice per battle, once per brain.
+async function callBattle(system, userContent, maxTokens, signal) {
+  const response = await fetch("/api/battle", {
+    method:"POST", signal,
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({model:BATTLE_MODEL,max_tokens:maxTokens,system,messages:[{role:"user",content:userContent}]})
+  });
+  if (!response.ok) { const e = await response.text(); throw new Error(`API ${response.status}: ${e.slice(0,300)}`); }
+  const data = await response.json();
+  if (data.error) throw new Error(data.error.message || "API error");
+  const textBlocks = (data.content||[]).filter(b=>b.type==="text").map(b=>b.text);
+  if (!textBlocks.length) throw new Error(`No text block. stop_reason=${data.stop_reason}`);
+  const rawMatch = textBlocks.join("\n").match(/\{[\s\S]*\}/);
+  if (!rawMatch) throw new Error("No JSON found in response.");
+  try { return JSON.parse(rawMatch[0]); } catch(e) { throw new Error("JSON parse error: "+e.message); }
+}
+
+// Joins the two halves and works out every total here rather than asking the
+// model to add up. Arithmetic done locally is always right; arithmetic done by
+// a language model sometimes is not.
+function mergeBattle(p1, p2) {
+  if (!p1.entity_a || !p1.b2_battles) throw new Error("Incomplete Brain 2 response.");
+  if (!p2.b1_battles || !p2.verdict) throw new Error("Incomplete Brain 1 response.");
+
+  const b2 = Object.values(p1.b2_battles), b1 = Object.values(p2.b1_battles);
+  const sum = (rows, key) => rows.reduce((t,r) => t + (Number(r[key])||0), 0);
+  const count = (rows, w) => rows.filter(r => r.winner === w).length;
+
+  const a_b2_total = sum(b2,"a_score"), b_b2_total = sum(b2,"b_score");
+  const a_b1_total = sum(b1,"a_score"), b_b1_total = sum(b1,"b_score");
+  const aTotal = a_b2_total + a_b1_total, bTotal = b_b2_total + b_b1_total;
+  const diff = Math.abs(aTotal - bTotal);
+
+  return {
+    entity_a: p1.entity_a, entity_b: p1.entity_b,
+    category: p1.category, context: p1.context,
+    data_confidence: p1.data_confidence || "full",
+    b2_battles: p1.b2_battles, b1_battles: p2.b1_battles,
+    a_b2_total, b_b2_total, a_b1_total, b_b1_total,
+    a_wins: count(b2,"A") + count(b1,"A"),
+    b_wins: count(b2,"B") + count(b1,"B"),
+    ties: count(b2,"TIE") + count(b1,"TIE"),
+    overall_winner: aTotal > bTotal ? "A" : bTotal > aTotal ? "B" : "TIE",
+    margin: diff >= 10 ? "Dominant" : diff >= 5 ? "Moderate" : "Narrow",
+    knockout_dimension: p2.knockout_dimension || "",
+    verdict: p2.verdict,
+    wildcard: p2.wildcard || ""
+  };
 }
 
 function setProgress(pct) { document.getElementById("progress-fill").style.width=pct+"%"; document.getElementById("fight-pct").textContent=pct+"%"; }
